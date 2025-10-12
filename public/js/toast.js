@@ -28,14 +28,41 @@ let toastManager = {
         }
     },
 
-    handleNewsletterSubmit: function(e) {
+    handleNewsletterSubmit: async function(e) {
         e.preventDefault();
         
-        const email = document.getElementById('newsletter-email').value;
-        if (email) {
-            // Simula l'invio (in un progetto reale faresti una chiamata al server)
-            this.showNewsletterToast();
-            document.getElementById('newsletter-email').value = '';
+        const emailInput = document.getElementById('newsletter-email');
+        const email = emailInput.value.trim();
+        
+        if (!email) {
+            return;
+        }
+        
+        try {
+            const response = await fetch('/api/newsletter', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email })
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                this.showNewsletterToast();
+                emailInput.value = '';
+            } else {
+                if (data.message.includes('già registrata')) {
+                    this.showToast('Email già iscritta alla newsletter', 'warning');
+                } else {
+                    this.showToast(data.message || 'Errore durante l\'iscrizione', 'danger');
+                }
+            }
+            
+        } catch (error) {
+            console.error('Errore iscrizione newsletter:', error);
+            this.showToast('Errore durante l\'iscrizione. Riprova più tardi.', 'danger');
         }
     },
 

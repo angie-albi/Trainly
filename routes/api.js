@@ -302,6 +302,63 @@ router.get('/search', async (req, res) => {
     }
 });
 
+// POST /api/newsletter - Iscrizione newsletter
+router.post('/newsletter', async (req, res) => {
+    try {
+        const { email } = req.body;
+
+        // Validazione email
+        if (!email || !validateEmail(email)) {
+            return res.status(400).json({
+                success: false,
+                message: 'Email non valida'
+            });
+        }
+
+        const emailNormalized = email.toLowerCase().trim();
+
+        // Verifica se l'email esiste già
+        const existing = await new Promise((resolve, reject) => {
+            db.get(`
+                SELECT email FROM newsletter WHERE email = ?
+            `, [emailNormalized], (err, row) => {
+                if (err) reject(err);
+                else resolve(row);
+            });
+        });
+
+        if (existing) {
+            return res.status(409).json({
+                success: false,
+                message: 'Email già registrata alla newsletter'
+            });
+        }
+
+        // Inserisci email nel database
+        await new Promise((resolve, reject) => {
+            db.run(`
+                INSERT INTO newsletter (email, subscribed_at)
+                VALUES (?, datetime('now'))
+            `, [emailNormalized], function(err) {
+                if (err) reject(err);
+                else resolve(this);
+            });
+        });
+
+        res.json({
+            success: true,
+            message: 'Iscrizione alla newsletter effettuata con successo!'
+        });
+
+    } catch (error) {
+        console.error('Errore iscrizione newsletter:', error);
+        
+        res.status(500).json({
+            success: false,
+            message: 'Errore nell\'iscrizione alla newsletter'
+        });
+    }
+});
 
 
 // =====================================

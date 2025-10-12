@@ -9,7 +9,9 @@ const db = new sqlite3.Database(dbPath);
 function initDatabase() {
     return new Promise((resolve, reject) => {
         db.serialize(async () => {
-            // Creazione tabelle (come già presente)
+
+            // CREAZIONE TABELLE
+            // Tabella utenti
             db.run(`CREATE TABLE IF NOT EXISTS users (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 email TEXT UNIQUE NOT NULL,
@@ -26,6 +28,7 @@ function initDatabase() {
                 console.log('Tabella users creata con successo');
             });
 
+            // Tabella prodotti
             db.run(`CREATE TABLE IF NOT EXISTS products (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 name TEXT NOT NULL,
@@ -39,7 +42,6 @@ function initDatabase() {
                 if (err) console.error('Errore tabella products:', err);
                 else console.log('Tabella products creata con successo');
             });
-
 
             // Tabella ordini
             db.run(`CREATE TABLE IF NOT EXISTS orders (
@@ -85,6 +87,7 @@ function initDatabase() {
                 else console.log('Tabella payments creata con successo');
             });
 
+            // Tabella carrelli
             db.run(`CREATE TABLE IF NOT EXISTS cart_items (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 user_id INTEGER NOT NULL,
@@ -96,6 +99,29 @@ function initDatabase() {
             )`, (err) => {
                 if (err) console.error('Errore tabella cart_items:', err);
                 else console.log('Tabella cart_items creata con successo');
+            });
+
+            // Tabella newsletter
+            db.run(`CREATE TABLE IF NOT EXISTS newsletter (
+                email TEXT PRIMARY KEY NOT NULL,
+                subscribed_at DATETIME DEFAULT CURRENT_TIMESTAMP
+            )`, (err) => {
+                if (err) console.error('Errore tabella newsletter:', err);
+                else console.log('Tabella newsletter creata con successo');
+            });
+
+            db.get('SELECT COUNT(*) as count FROM newsletter', (err, row) => {
+                if (err) {
+                    console.error('Errore conteggio newsletter:', err);
+                } else if (row.count === 0) {
+                    db.run(`
+                        INSERT INTO newsletter (email, subscribed_at)
+                        VALUES ('newsletter@gmail.com', datetime('now'))
+                    `, (err) => {
+                        if (err) console.error('Errore inserimento email newsletter:', err);
+                        else console.log('Email di esempio per newsletter inserita');
+                    });
+                }
             });
 
             // Inserisci utente admin di default se non esiste
@@ -119,7 +145,7 @@ function initDatabase() {
                         } else {
                             console.log('Utente admin già esistente');
                         }
-                        // Dopo admin, popola prodotti e utenti di esempio
+
                         populateExampleData().then(resolve).catch(reject);
                     }
                 );
@@ -127,7 +153,6 @@ function initDatabase() {
 
             // Funzione per popolare prodotti e utenti di esempio
             async function populateExampleData() {
-                // Popola prodotti se vuoto
                 db.get('SELECT COUNT(*) as count FROM products', (err, row) => {
                     if (err) return reject(err);
                     if (row.count === 0) {
