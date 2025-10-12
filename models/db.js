@@ -205,9 +205,8 @@ function initDatabase() {
                     if (err2) return reject(err2);
                     if (row2.count === 0) {
                         const users = [
-                            { email: 'mario.rossi@gmail.com', password: 'Test123!', nome: 'Mario', cognome: 'Rossi' },
-                            { email: 'lucia.bianchi@gmail.com', password: 'Test123!', nome: 'Lucia', cognome: 'Bianchi' },
-                            { email: 'test@trainly.com', password: 'Test123!', nome: 'Utente', cognome: 'Test' }
+                            { email: 'albitres2004@gmail.com', password: 'Test123!', nome: 'Angie', cognome: 'Albitres' },
+                            { email: 'lucia.bianchi@gmail.com', password: 'Test123!', nome: 'Lucia', cognome: 'Bianchi' }
                         ];
                         users.forEach(user => {
                             bcrypt.hash(user.password, 10, (err, hash) => {
