@@ -1,0 +1,41 @@
+body {
+    background-color: #f8f9fa;
+}
+.success-icon {
+    font-size: 4rem;
+    color: #28a745;
+    animation: bounce 1s ease-in-out;
+}
+@keyframes bounce {
+    0%, 20%, 60%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-20px); }
+    80% { transform: translateY(-10px); }
+}
+.order-card {
+    border-radius: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+.timeline-item {
+    border-left: 3px solid #28a745;
+    padding-left: 1rem;
+    margin-bottom: 1rem;
+}
+.timeline-item.active {
+    border-left-color: rgb(17, 57, 133);
+}
+.timeline-item.active .timeline-icon {
+    background-color: rgb(17, 57, 133);
+    color: white;
+}
+.timeline-icon {
+    background-color: #28a745;
+    color: white;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: -18px;
+    margin-right: 1rem;
+}

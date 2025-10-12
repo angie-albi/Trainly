@@ -1,0 +1,49 @@
+body {
+    background-color: #f8f9fa;
+}
+
+.checkout-card {
+    border-radius: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.step-indicator {
+    background: linear-gradient(90deg, royalblue, rgb(17, 57, 133));
+    color: white;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+}
+
+.btn-primary-custom {
+    background: linear-gradient(90deg, royalblue, rgb(17, 57, 133));
+    border: none;
+}
+
+.btn-primary-custom:hover {
+    transform: scale(1.05);
+    transition: transform 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: rgb(17, 57, 133);
+    box-shadow: 0 0 0 0.2rem rgba(17, 57, 133, 0.25);
+}
+
+.sticky-sidebar {
+    position: sticky;
+    top: calc(70px + 1rem);
+    z-index: 1020; 
+}
+
+:root {
+    --navbar-height: 70px;
+}
+
+.sticky-sidebar-dynamic {
+    top: calc(var(--navbar-height) + 1rem);
+}

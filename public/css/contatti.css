@@ -1,0 +1,25 @@
+.card-title {
+    color:rgb(17, 57, 133);
+}
+
+.d-grid .btn{
+    background: linear-gradient(90deg,  royalblue, rgb(17, 57, 133));
+    border: none;
+    border-radius: 20px;
+    width: 100%;
+}
+
+.d-grid .btn:hover{
+    transform: scale(1.04);
+    transition: transform 0.3s ease;
+}
+
+.contact-info a{
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.contact-info a:hover {
+    text-decoration: underline;
+    color: rgb(17, 57, 133);
+}

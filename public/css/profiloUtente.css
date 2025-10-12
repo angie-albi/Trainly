@@ -1,0 +1,18 @@
+
+#toggleIcon{
+    user-select: none;
+}
+
+.bi-eye-slash:hover, .bi-eye:hover {
+    transform: scale(1.04);
+    transition: transform 0.3s ease;
+}
+
+.input-group-text {
+    cursor: pointer;
+}
+
+.btn-edit, .btn-save,.btn-edit:hover, .btn-save:hover {
+    color: white;
+    background: linear-gradient(90deg,  royalblue, rgb(17, 57, 133));
+}

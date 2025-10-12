@@ -1,0 +1,211 @@
+.card-footer, .text-body-secondary{
+    color:white!important;
+    background-color: rgb(17, 57, 133);
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    margin: 0;
+    overflow-x: hidden;
+}
+
+main.content-wrap {
+    flex-grow: 1;
+}
+
+footer {
+    margin-top: auto;
+}
+
+h7{
+    font-size: 13px;
+}
+
+.form-control{
+    font-size: 13px;
+}
+.sidenav {
+    position: fixed;
+    top: 150px;
+    left: 0;
+    width: 25%; 
+    padding: 1.5rem;
+    height: calc(100vh - 150px);
+    overflow-y: auto;
+    z-index: 10;
+}
+  
+.product {
+    margin-left: 25% !important;
+    padding-left: 2rem;
+}
+
+.container-fluid.row {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}
+
+.product-hidden {
+    display: none !important;
+}
+
+aside .sidenav-link:hover,aside .sidenav-link:hover .bi-arrow-right-short {
+    color: rgb(17, 57, 133) !important;
+    font-weight: bold;
+}
+
+aside .sidenav-link:hover .bi-arrow-right-short{
+    stroke: rgb(17, 57, 133);
+    stroke-width: 2;
+}
+
+.sidenav-link {
+    display: flex;
+}
+
+footer small{
+    font-size: 0.95rem; 
+}
+
+footer small a:hover{
+    text-decoration: underline !important;
+}
+
+.bi-arrow-right-square:hover, .form-control:hover,.btn-show:hover, .btn-filtri-mobile:hover, .product-item .btn:hover{
+    transform: scale(1.04);
+    transition: transform 0.3s ease;
+}
+
+.offcanvas-body .bi-arrow-right-square:hover, .offcanvas-body .sidenav-link:hover{
+    color: white !important;
+    font-weight: bold !important;
+}
+
+.offcanvas-body .sidenav-link.active-filter, .offcanvas-body .sidenav-link.active-filter .bi-arrow-right-short {
+    color: white !important;
+    font-weight: bold !important;
+    stroke: white !important;
+    stroke-width: 3 !important;
+}
+
+.offcanvas-body .sidenav-link.active-filter:hover, .offcanvas-body .sidenav-link.active-filter:hover .bi-arrow-right-short {
+    color: white !important;
+    font-weight: bold !important;
+    stroke: white !important;
+    stroke-width: 3 !important;
+}
+
+.btn-show{
+    background: linear-gradient(90deg,  royalblue, rgb(17, 57, 133)) !important;
+}
+
+.sidenav-link.active-filter, .sidenav-link.active-filter .bi-arrow-right-short {
+    color: rgb(17, 57, 133) !important;
+    font-weight: bold;
+    stroke: rgb(17, 57, 133);
+    stroke-width: 2;
+}
+
+.btn-filtri-mobile{
+    background: linear-gradient(90deg,  royalblue, rgb(17, 57, 133));
+}
+
+.product-item .btn{
+    background: white;
+    color: black;
+}
+
+.product-item img { 
+    width: 100%;
+    aspect-ratio: 1 / 1; 
+    object-fit: cover;
+    object-position: top;
+}
+
+.card-footer .btn-carrello-aggiungi, .carrello-footer .btn-checkout{
+    background: rgb(24, 72, 162);
+}
+
+.d-flex .btn-outline:hover, .btn-delete:hover{
+    background: rgb(24, 72, 162);
+    transform: scale(1.15);
+    transition: transform 0.3s ease;
+    color: white !important;
+}
+
+.btn-delete{
+    color: rgb(24, 72, 162);
+}
+
+.bi-credit-card:hover{
+    color:white !important;
+}
+
+#cartOffcanvas .offcanvas-header {
+    padding: 0.8rem 1.2rem !important;
+}
+
+#cartOffcanvas .offcanvas-body:not(.carrello-vuoto) {
+    padding-top: 1.5rem !important;
+    justify-content: flex-start !important;
+}
+
+#cartOffcanvas .offcanvas-body.carrello-vuoto, #cartOffcanvas .offcanvas-body:has(.text-center.h3) {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
+}
+
+@media (max-width: 991.98px) {
+    .product {
+        margin-left: 0 !important; 
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+    }
+    
+    .sidenav {
+        display: none;
+    }
+    
+    main.content-wrap {
+        margin-right: 0 !important;
+        margin-left: 0 !important;
+    }
+    
+    .container-fluid {
+        padding-left: 15px;
+        padding-right: 15px;
+        max-width: 100%;
+    }
+
+    .btn-show {
+        margin-left: 35px !important;
+        background: white !important;
+        color: black !important;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .product {
+        margin-left: 0 !important;
+        padding-left: 0.5rem !important;
+        padding-right: 0.5rem !important;
+    }
+    
+    .container-fluid {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+    
+    .product-item {
+        margin-bottom: 1rem;
+    }
+    
+    .row {
+        margin-left: 0;
+        margin-right: 0;
+    }
+}

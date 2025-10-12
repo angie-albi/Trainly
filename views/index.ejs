@@ -1,0 +1,164 @@
+<%- include('partials/header', { title: 'Home'}) %>
+    <%- include('partials/navbar', { currentPage: 'home' }) %>
+
+    <!-- MAIN CONTENT -->
+    <div class="container-fluid p-5 pb-3">
+        <div class="row">
+            <div class="col-12 col-lg-6 m-auto">
+                <p class="h1 home">MIGLIORA LA TUA FORMA FISICA</p>
+                <p class="h2">Allenati per diventare la tua versione migliore</p>
+                <p class="h6">Programmi di allenamento, coaching online e risorse per raggiungere il tuo obiettivo fitness</p>
+                <a type="button" class="btn btn-discover btn-outline-primary mt-3 main-catalogo" href="/catalogo">Scopri di più</a>
+            </div>
+            <div class="col-5 d-none d-lg-block">
+                <img src="/img/home.png" class="m-auto d-block col-8">
+            </div>
+        </div>
+    </div>
+
+    <!-- Prodotti -->
+    <div class="container-fluid p-5">
+        <h3 class="mb-3 p-2">Prodotti</h3>
+
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            <div class="col">
+                <div class="card card-prod">
+                <a href="/catalogo?categoria=programma" class="stretched-link text-decoration-none"></a>
+                <div class="card-body">
+                    <h5 class="card-title mb-3 border-bottom pb-3">Programmi</h5>
+                    <p class="card-text">
+                        Programmi di allenamento standard, ideali per chi ha esperienza e cerca routine strutturate. <br>
+                        Non personalizzabili, sono pensati per allenamenti generali senza esigenze specifiche, perfetti per chi vuole allenarsi in autonomia.
+                    </p>
+                </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card card-prod">
+                <div class="card-body">
+                    <a href="/catalogo?categoria=coaching" class="stretched-link text-decoration-none"></a>
+                    <h5 class="card-title mb-3 border-bottom pb-3">Coaching</h5>
+                    <p class="card-text">   
+                        Il coaching è un percorso personalizzato che include una scheda di allenamento su misura, un piano alimentare flessibile redatto da una nutrizionista e supporto continuo. <br>
+                        Riceverai correzioni tramite audio/video e monitoraggio costante dei tuoi progressi per raggiungere i tuoi obiettivi in modo efficace.
+                    </p>
+                </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card card-prod">
+                <a href="/catalogo?categoria=e-book" class="stretched-link text-decoration-none"></a>
+                <div class="card-body">
+                    <h5 class="card-title mb-3 border-bottom pb-3">E-book</h5>
+                    <p class="card-text">
+                        I nostri e-book fitness ti offrono strategie pratiche per migliorare i risultati, mantenere la costanza, curare l'alimentazione e allenarti in ogni fase della vita.
+                        Strumenti semplici, concreti e subito applicabili per aiutarti a costruire abitudini sane e risultati duraturi.
+                    </p>
+                </div>
+                </div>
+            </div>
+            </div>
+    </div>
+
+    <!-- Faq -->
+    <div class="p-5" id="FAQ">
+        <p class="h3 mb-4 ps-2">Domande frequenti</p>
+        <div class="accordion" id="accordionExample">
+            <div class="accordion-item">
+                    <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                        Come capisco qual è il servizio più adatto a me?
+                    </button>
+                </h2>
+                <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                    <div class="accordion-body ms-3">
+                        I nostri programmi standard sono ideali per chi ha già una buona esperienza e conoscenza dell'allenamento, in modo da poterli seguire in totale sicurezza senza supporto esterno. 
+                        Se invece senti di aver bisogno di un piano personalizzato, o se hai bisogno di un aiuto per adattare l'allenamento alle tue specifiche necessità, ti consigliamo di scegliere il nostro servizio di coaching, pensato per offrirti un supporto completo e su misura.
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                        Quando e come riceverò il programma?
+                    </button>
+                </h2>
+                <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                    <div class="accordion-body ms-3">
+                        Se hai acquistato il servizio di coaching, riceverai il materiale entro 5 giorni lavorativi su WhatsApp, dopo aver completato il questionario (inviato via email) e confermato il pagamento.
+                        Se invece hai scelto un programma non personalizzato, lo riceverai subito via email non appena il pagamento sarà completato.
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                    <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                        Posso avere supporto anche al di fuori degli allenamenti?
+                    </button>
+                    </h2>
+                <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                    <div class="accordion-body ms-3">
+                        Sono sempre a tua disposizione per rispondere alle domande, chiarire dubbi o darti consigli sul programma, sia tramite WhatsApp che via email. Il supporto sarà costante per tutta la durata del percorso.
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                    <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                        Come funziona il pagamento?
+                    </button>
+                    </h2>
+                <div id="collapseFour" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                    <div class="accordion-body ms-3">
+                        Il pagamento avviene in modo sicuro tramite il nostro sistema online. Una volta completato, riceverai una conferma via email e, in caso di coaching, il questionario da compilare.
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
+                    Posso modificare il programma in corso?
+                </button>
+                </h2>
+                <div id="collapseFive" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                    <div class="accordion-body ms-3">
+                        Sì, nel servizio di coaching il programma può essere adattato in base ai tuoi progressi o a eventuali esigenze che emergono durante il percorso.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Testimonianze utenti -->
+    <div class="container-fluid p-5">
+        <h3 class="mb-3 p-2">Cosa dicono i nostri utenti</h3>
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            <div class="col">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <p class="card-text fst-italic">"Grazie a Trainly ho finalmente trovato la motivazione per allenarmi con costanza. I programmi sono chiari e facili da seguire!"</p>
+                        <h6 class="card-subtitle mt-3 mb-0 text-muted">- Martina R.</h6>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <p class="card-text fst-italic">"Il coaching personalizzato mi ha aiutato a raggiungere risultati che non pensavo possibili. Supporto sempre presente e professionale."</p>
+                        <h6 class="card-subtitle mt-3 mb-0 text-muted">- Luca B.</h6>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <p class="card-text fst-italic">"Gli e-book sono ricchi di consigli pratici e motivanti. Consiglio Trainly a chiunque voglia migliorare la propria forma fisica!"</p>
+                        <h6 class="card-subtitle mt-3 mb-0 text-muted">- Giulia S.</h6>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<!-- Resto del contenuto... -->
+<%- include('partials/footer') %>

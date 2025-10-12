@@ -1,0 +1,253 @@
+<%- include('partials/header', { title: 'Catalogo'}) %>
+  <%- include('partials/navbar', { currentPage: 'catalogo' }) %>
+
+    <!-- Num prodotti -->
+    <div class="mt-3 text-end pe-5 pb-0">
+        <small id="product-count">0 prodotti</small>
+    </div>
+  
+    <!-- MAIN -->
+    <main class="content-wrap me-3">
+      <div class="container-fluid">
+
+        <!--- Filtri mobile -->
+        <div class="d-lg-none text-end px-4 pt-3">
+          <button class="btn btn-outline-secondary btn-filtri-mobile text-white" type="button" data-bs-toggle="offcanvas" data-bs-target="#filterOffcanvas">
+            Filtri
+          </button>
+        </div>
+
+        <!-- Filtri desktop -->
+        <aside class="d-none d-lg-block p-4 pt-0 sidenav">
+          <h5 class="pb-2">Categoria</h5>
+
+          <p class="ps-3 pb-3 d-flex col-8 flex-column">
+            <a class="sidenav-link text-decoration-none text-black justify-content-between align-items-center pb-1" 
+              data-category-filter="programma" onclick="filterByCategory('programma'); return false;">
+              Programmi
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-arrow-right-short" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8"/>
+              </svg>
+            </a>
+            <a class="sidenav-link text-decoration-none text-black justify-content-between align-items-center pb-1" 
+              data-category-filter="coaching" onclick="filterByCategory('coaching'); return false;">Coaching
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-arrow-right-short" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8"/>
+              </svg>
+            </a>
+            <a class="sidenav-link text-decoration-none text-black justify-content-between align-items-center pb-1" 
+              data-category-filter="ebook" onclick="filterByCategory('ebook'); return false;">E-books
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-arrow-right-short" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8"/>
+              </svg>
+            </a>
+          </p>
+    
+          <h5 class="pt-4 pb-2 border-top">Filtra per prezzo</h3>
+          <div class="container-fluid row">
+            <h7 class="col-5">DA</h7>
+            <h7 class="col-5">A</h7>
+          </div>
+          <div class="container-fluid row">
+            <div class="col-5 px-1">
+              <input type="text" class="form-control px-2" placeholder="minimo">
+            </div>
+            <div class="col-5 px-1">
+              <input type="text" class="form-control px-2" placeholder="massimo">
+            </div>
+            <div class="col-2">
+              <svg xmlns="http://www.w3.org/2000/svg" width="30" height="35" fill="currentColor" class="bi bi-arrow-right-square bi-arrow" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M15 2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1zM0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm4.5 5.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5z"/>
+              </svg>
+            </div>
+          </div>
+        </aside>
+
+        <!-- Prodotti -->
+        <section class="py-4 product">
+          <div id="search-message" class="px-2 mb-3 mt-0"></div>
+            <div id="products-container" class="row row-cols-2 row-cols-md-3 g-4">
+                <!-- I prodotti verranno caricati tramite JavaScript -->
+            </div>
+        </section>
+
+      </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="text-center py-3">
+      <small>
+        &copy; 2025 Trainly &middot; 
+        <a href="/contatti" class="text-white text-decoration-none">Contatti</a> &middot; 
+        <a href="/#FAQ" class="text-white text-decoration-none">FAQ</a>
+      </small>
+    </footer>
+
+    <!-- TOAST -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <!-- (toast: prezzo errato) -->
+      <div id="priceToast" class="toast align-items-center text-bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+          <div class="toast-body">
+            Il prezzo minimo non può essere maggiore del prezzo massimo.
+          </div>
+          <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Chiudi"></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- OFFCANVAS -->
+      <!-- (carrello) -->
+      <div class="offcanvas offcanvas-end" tabindex="-1" id="cartOffcanvas" aria-labelledby="cartOffcanvasLabel">
+        <div class="offcanvas-header mx-2 mt-3">
+            <h5 class="offcanvas-title text-decoration-underline" id="cartOffcanvasLabel">Il tuo carrello</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body mx-3 d-flex flex-column justify-content-center align-items-center carrello-vuoto">
+            <div class="text-center h3 mb-3 text-decoration-none">Il tuo carrello è vuoto</div>
+            <a class="btn btn-light" href="/catalogo" role="button">Continua lo shopping</a>
+        </div>
+      </div>
+
+      <!-- (cerca)-->
+      <div class="offcanvas offcanvas-top " tabindex="-1" id="offcanvasTop" aria-labelledby="offcanvasTopLabel">
+        <div class="offcanvas-body p-0 pt-4">            
+          <div class="container-fluid mt-3">
+            <div class="row align-items-center">
+
+              <div class="col-11 ps-5 pe-3">
+                <form class="d-flex w-100" role="search">
+                  <input type="search" class="form-control form-search" placeholder="Cerca" aria-label="Search"> 
+                  <button type="button" class="btn btn-light ms-2">Cerca</button>
+                </form>
+              </div>
+
+              <div class="col-1 ps-0 text-end pe-4">
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+              </div>
+              
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- filtri -->
+      <div class="offcanvas offcanvas-start" tabindex="-1" id="filterOffcanvas" aria-labelledby="filterOffcanvasLabel">
+        <div class="offcanvas-header mx-2 mt-3">
+          <h5 class="offcanvas-title text-decoration-underline" id="filterOffcanvasLabel">Filtri</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+ 
+        <div class="offcanvas-body mx-3">
+          <h5 class="pb-2">Categoria</h5>
+          <p class="ps-3 pb-4 d-flex flex-column col-8">
+            <a class="sidenav-link text-decoration-none text-white justify-content-between align-items-center pb-1" data-category-filter="programma">Programmi
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-arrow-right-short text-white" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8"/>
+              </svg>
+            </a>
+            <a class="sidenav-link text-decoration-none text-white justify-content-between align-items-center pb-1" data-category-filter="coaching" >Coaching
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-arrow-right-short text-white" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8"/>
+              </svg>
+            </a>
+            <a class="sidenav-link text-decoration-none text-white justify-content-between align-items-center pb-1" data-category-filter="ebooks">E-books
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-arrow-right-short text-white" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8"/>
+              </svg>
+            </a>
+          </p>
+          <hr>
+
+          <h5 class="pt-4 pb-2">Filtra per prezzo</h5>
+          <div class="container-fluid row">
+            <label class="col-5">DA</label>
+            <label class="col-5">A</label>
+          </div>
+          <div class="container-fluid row">
+            <div class="col-5 px-1 min-max">
+              <input type="text" class="form-control px-2" placeholder="minimo">
+            </div>
+            <div class="col-5 px-1 min-max">
+              <input type="text" class="form-control px-2" placeholder="massimo">
+            </div>
+            <div class="col-2">
+              <div class="col-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="35" fill="currentColor" class="bi bi-arrow-right-square" viewBox="0 0 16 16">
+                  <path fill-rule="evenodd" d="M15 2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1zM0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm4.5 5.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5z"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- menu mobile -->
+      <div class="offcanvas offcanvas-end d-md-none" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+        <div class="offcanvas-header mx-2 mt-3">
+          <h5 class="offcanvas-title text-decoration-underline" id="offcanvasNavbarLabel">Menu</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body mx-3">
+          <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+            <li class="nav-item">
+              <a class="nav-link text-white" href="/">Home</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link fw-bold active text-white" href="/catalogo">Catalogo</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link text-white" href="/contatti">Contatti</a>
+            </li>
+          </ul>
+          <hr>
+          <!-- Icone -->
+          <div class="d-flex align-items-center justify-content-center gap-2 text-center w-100 m-auto">
+            <!-- cerca -->
+            <button class="btn btn-cerca" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasTop" aria-controls="offcanvasTop">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-search text-white" viewBox="0 0 16 16">
+                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+              </svg>
+            </button>
+            <!-- accedi/regitrati -->
+            <div class="dropdown">
+              <a id="userDropdown" class="btn btn-sm d-flex align-items-center py-2 btn1" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-person text-white" viewBox="0 0 16 16">
+                  <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10s-3.516.68-4.168 1.332c-.678.678-.83 1.418-.832 1.664z"/>
+                </svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" class="bi bi-chevron-down ms-1 text-white" viewBox="0 0 16 16">
+                  <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/>
+                </svg>
+              </a>
+              <ul class="dropdown-menu dropdown-menu-end">
+                <% if (locals.user) { %>
+                    <li><a class="dropdown-item" href="/profiloUtente">Il mio profilo</a></li>
+                    <li><a class="dropdown-item" href="/logout">Logout</a></li>
+                <% } else { %>
+                    <li class="menu-login"><a class="dropdown-item" href="/accedi">Accedi</a></li>
+                    <li class="menu-register"><a class="dropdown-item" href="/registrati">Registrati</a></li>
+                <% } %>
+              </ul>
+            </div>
+            <!-- carrello -->
+            <button class="btn btn-carrello" type="button" data-bs-toggle="offcanvas" data-bs-target="#cartOffcanvas" aria-controls="cartOffcanvas">
+              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-cart text-white" viewBox="0 0 16 16">
+                <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5M3.102 4l1.313 7h8.17l1.313-7zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4m7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4m-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2m7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+    <!-- Bootstrap JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" 
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" 
+    crossorigin="anonymous"></script>
+
+    <script src="js/catalogo.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/ricerca.js"></script>
+    <script src="js/carrello.js"></script>
+
+  </body>
+</html>
