@@ -1,7 +1,6 @@
 // Gestione toast e notifiche
 let toastManager = {
     init: function() {
-        console.log('Toast manager inizializzato');
         this.initializeToasts();
         this.bindEvents();
     },

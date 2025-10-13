@@ -454,7 +454,7 @@ function procediCheckout() {
     salvaCarrello();
     
     window.location.href = '/checkout';
-}heck
+}
 
 // Salva il carrello
 function salvaCarrello() {

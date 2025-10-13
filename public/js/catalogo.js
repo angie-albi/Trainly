@@ -405,7 +405,7 @@ function addCartButtonListeners() {
                         title: product.title,
                         price: product.price,
                         category: product.category,
-                        image: product.image,   // 👈 aggiunto!
+                        image: product.image,  
                         quantity: 1
                     });
                 }

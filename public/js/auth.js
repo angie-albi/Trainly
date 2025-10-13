@@ -5,7 +5,6 @@ class AuthManager {
     }
 
     init() {
-        console.log('Auth manager inizializzato');
         this.bindEvents();
         this.updateUI();
     }
@@ -56,13 +55,11 @@ class AuthManager {
         }
 
         console.log('Form di login valido, invio al server');
-        // Il form verrà inviato normalmente al server
     }
 
 
     handleLogout(e) {
         console.log('Logout richiesto');
-        // Il link verrà seguito normalmente
     }
 
     // Utilità per validazione email
