@@ -169,7 +169,7 @@ document.addEventListener('DOMContentLoaded', function() {
     loadUserOrders(); 
 });
 
-// 🔹 NUOVA FUNZIONE: Carica profilo utente dall'API
+//Carica profilo utente dall'API
 async function loadUserProfile() {
     try {
         const response = await fetch('/api/user/profile');
@@ -191,12 +191,12 @@ async function loadUserProfile() {
             // Aggiorna il messaggio di benvenuto
             const benvenutoElement = document.getElementById('benvenutoUtente');
             if (benvenutoElement) {
+                // Messaggio di benvenuto unificato per tutti
+                benvenutoElement.textContent = `Benvenuto, ${user.nome}!`;
+                
+                // Controlla il ruolo per aggiungere il pannello admin
                 if (user.role === 'admin') {
-                    benvenutoElement.textContent = `Benvenuto Admin ${user.nome}!`;
-                    // Aggiungi pannello admin se è admin
                     addAdminPanel();
-                } else {
-                    benvenutoElement.textContent = `Benvenuto, ${user.nome}!`;
                 }
             }
         }
@@ -206,7 +206,7 @@ async function loadUserProfile() {
     }
 }
 
-// 🔹 NUOVA FUNZIONE: Carica ordini utente dall'API
+// Carica ordini utente dall'API
 async function loadUserOrders() {
     try {
         const response = await fetch('/api/user/orders');
@@ -282,7 +282,7 @@ async function loadUserOrders() {
     }
 }
 
-// 🔹 FORM SUBMISSION: Aggiorna profilo via API
+// Aggiorna profilo via API
 const profiloForm = document.getElementById('profiloForm');
 if (profiloForm) {
     profiloForm.addEventListener('submit', async function(e) {
@@ -359,7 +359,6 @@ if (profiloForm) {
     });
 }
 
-// 🔹 FUNZIONI HELPER
 
 function addAdminPanel() {
     const main = document.querySelector('main');

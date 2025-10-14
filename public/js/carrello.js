@@ -219,46 +219,66 @@ function aggiornaInterfacciaCarrello() {
     const numeroArticoli = contaArticoli();
 
     if (carrello.length === 0) {
+        carrelloOffcanvas.className = 'offcanvas-body mx-3 d-flex flex-column justify-content-center align-items-center carrello-vuoto';
         carrelloOffcanvas.innerHTML = `
             <div class="text-center h3 mb-3 text-decoration-none">Il tuo carrello è vuoto</div>
             <a class="btn btn-light" href="/catalogo" role="button">Continua lo shopping</a>
         `;
     } else {
-        let htmlCarrello = '<div class="carrello-lista">';
-        carrello.forEach(prodotto => {
-            htmlCarrello += `
-                <div class="carrello-item border-bottom p-3 bg-white rounded mb-2" data-id="${prodotto.id}">
-                    <div class="row align-items-center text-black">
-                        <div class="col-3">
-                            <img src="${prodotto.image || '/img/placeholder.png'}" class="img-fluid rounded" alt="${prodotto.title}">
-                        </div>
-                        <div class="col-6">
-                            <h6 class="mb-1">${prodotto.title}</h6>
-                            <div class="d-flex align-items-center mt-2">
-                                <button class="btn btn-sm btn-outline text-black" onclick="modificaQuantita('${prodotto.id}', ${prodotto.quantity - 1})">-</button>
-                                <span class="mx-2">${prodotto.quantity}</span>
-                                <button class="btn btn-sm btn-outline text-black" onclick="modificaQuantita('${prodotto.id}', ${prodotto.quantity + 1})">+</button>
+        carrelloOffcanvas.className = 'offcanvas-body mx-3 d-flex flex-column';
+
+        let bottoneAzioneHtml = '';
+        if (isUserAuthenticated) {
+            // Se l'utente è loggato, mostra il bottone per il checkout
+            bottoneAzioneHtml = `
+                <button class="btn btn-checkout w-100 mb-2 text-white" onclick="procediCheckout()">
+                    Procedi al checkout
+                </button>
+            `;
+        } else {
+            // Se l'utente NON è loggato, mostra il bottone per accedere
+            bottoneAzioneHtml = `
+                <a href="/accedi?redirect=/checkout" class="btn btn-checkout w-100 mb-2 text-white">
+                    Accedi per continuare
+                </a>
+            `;
+        }
+
+        let htmlCarrello = `
+            <div class="carrello-lista">
+                ${carrello.map(prodotto => `
+                    <div class="carrello-item border-bottom p-3 bg-white rounded mb-2" data-id="${prodotto.id}">
+                        <div class="row align-items-center text-black">
+                            <div class="col-3">
+                                <img src="${prodotto.image || '/img/placeholder.png'}" class="img-fluid rounded" alt="${prodotto.title}">
+                            </div>
+                            <div class="col-6">
+                                <h6 class="mb-1">${prodotto.title}</h6>
+                                <div class="d-flex align-items-center mt-2">
+                                    <button class="btn btn-sm btn-outline text-black" onclick="modificaQuantita('${prodotto.id}', ${prodotto.quantity - 1})">-</button>
+                                    <span class="mx-2">${prodotto.quantity}</span>
+                                    <button class="btn btn-sm btn-outline text-black" onclick="modificaQuantita('${prodotto.id}', ${prodotto.quantity + 1})">+</button>
+                                </div>
+                            </div>
+                            <div class="col-3 text-end">
+                                <div class="fw-bold">${(prodotto.price * prodotto.quantity).toFixed(2)}€</div>
+                                <button class="btn btn-sm btn-delete mt-1" onclick="rimuoviDalCarrello('${prodotto.id}')">
+                                    <i class="bi bi-trash"></i>
+                                </button>
                             </div>
                         </div>
-                        <div class="col-3 text-end">
-                            <div class="fw-bold">${(prodotto.price * prodotto.quantity).toFixed(2)}€</div>
-                            <button class="btn btn-sm btn-delete mt-1" onclick="rimuoviDalCarrello('${prodotto.id}')">
-                                <i class="bi bi-trash"></i>
-                            </button>
-                        </div>
                     </div>
-                </div>
-            `;
-        });
-        htmlCarrello += `</div>
-            <div class="carrello-footer mt-4 bg-white rounded p-3 shadow-sm">
+                `).join('')}
+            </div>
+
+            <div class="carrello-footer mt-auto bg-white rounded p-3 shadow-sm" style="flex-shrink: 0;">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <strong class="text-dark fs-7">Totale: ${calcolaTotale().toFixed(2)}€</strong>
                     <small class="text-muted">${numeroArticoli} articol${numeroArticoli === 1 ? 'o' : 'i'}</small>
                 </div> 
-                <button class="btn btn-checkout w-100 mb-2 text-white" onclick="procediCheckout()">
-                    Procedi al checkout
-                </button>
+                
+                ${bottoneAzioneHtml}
+                
                 <button class="btn btn-outline-secondary w-100" onclick="svuotaCarrello()">Svuota carrello</button>
             </div>
         `;
