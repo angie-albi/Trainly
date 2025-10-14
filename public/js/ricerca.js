@@ -91,7 +91,7 @@ function handleCatalogSearch() {
         // Se c'è un termine di ricerca nell'URL, applicalo
         const searchMessage = document.getElementById('search-message');
         if (searchMessage) {
-            searchMessage.textContent = `Risultati per: "${decodeURIComponent(searchTerm)}"`;
+            searchMessage.textContent = `Cerca: "${decodeURIComponent(searchTerm)}"`;
         }
         
         // Se la funzione applyFilters esiste (da catalogo.js), applicala
