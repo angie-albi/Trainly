@@ -123,13 +123,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ───── PAGAMENTO ─────
     function setupPaymentMethods() {
-        paymentMethods.forEach(method => {
-            method.addEventListener('change', () => {
-                const isCreditCard = method.value === 'credit_card' && method.checked;
-                const isPayPal = method.value === 'paypal' && method.checked;
-
-                creditCardDetails.style.display = isCreditCard ? 'block' : 'none';
-                paypalDetails.style.display = isPayPal ? 'block' : 'none';
+        paymentMethods.forEach(radio => {
+            radio.addEventListener('change', (event) => {
+                if (event.target.value === 'paypal') {
+                    creditCardDetails.style.display = 'none';
+                    paypalDetails.style.display = 'block';
+                } else {
+                    creditCardDetails.style.display = 'block';
+                    paypalDetails.style.display = 'none';
+                }
             });
         });
     }
