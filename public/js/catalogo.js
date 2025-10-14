@@ -23,10 +23,27 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
+
 async function initializeCatalog() {
     showLoadingState();
     await loadProducts();
-    setupEventListeners();
+    setupEventListeners(); 
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const categoryFromUrl = urlParams.get('categoria');
+    const searchTermFromUrl = urlParams.get('search');
+
+    if (categoryFromUrl) {
+        filterByCategory(categoryFromUrl);
+        updateActiveFilterDisplay();
+    } else if (searchTermFromUrl) {
+        const searchInput = document.querySelector('.form-search, input[type="search"]');
+        if (searchInput) {
+            searchInput.value = searchTermFromUrl;
+        }
+        searchProducts(searchTermFromUrl);
+    }
+
     hideLoadingState();
 }
 
@@ -492,8 +509,7 @@ function getCategoryName(category) {
     const categoryNames = {
         'programma': 'Programmi',
         'coaching': 'Coaching',
-        'ebook': 'E-books',
-        'e-book': 'E-books'
+        'ebook': 'E-books'
     };
     return categoryNames[category] || (category || '');
 }
