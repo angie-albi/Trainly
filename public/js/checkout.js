@@ -11,9 +11,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const creditCardDetails = document.getElementById('creditCardDetails');
     const cardNumber = document.getElementById('cardNumber');
     const cvv = document.getElementById('cvv');
+    const paypalDetails = document.getElementById('paypalDetails'); 
 
     let cartItems = [];
     let subtotal = 0, taxes = 0, total = 0;
+    
 
     // ───── FUNZIONE PER VERIFICARE AUTENTICAZIONE ─────
     async function checkAuth() {
@@ -123,7 +125,11 @@ document.addEventListener('DOMContentLoaded', () => {
     function setupPaymentMethods() {
         paymentMethods.forEach(method => {
             method.addEventListener('change', () => {
-                creditCardDetails.style.display = method.value === 'credit_card' && method.checked ? 'block' : 'none';
+                const isCreditCard = method.value === 'credit_card' && method.checked;
+                const isPayPal = method.value === 'paypal' && method.checked;
+
+                creditCardDetails.style.display = isCreditCard ? 'block' : 'none';
+                paypalDetails.style.display = isPayPal ? 'block' : 'none';
             });
         });
     }
