@@ -10,53 +10,12 @@ class AuthManager {
     }
 
     bindEvents() {
-        // Gestione form di login
-        const loginForm = document.getElementById('loginForm');
-        if (loginForm) {
-            loginForm.addEventListener('submit', this.handleLogin.bind(this));
-        }
-
         // Gestione logout
         const logoutLinks = document.querySelectorAll('a[href="/logout"]');
         logoutLinks.forEach(link => {
             link.addEventListener('click', this.handleLogout.bind(this));
         });
     }
-
-    handleLogin(e) {
-        // Validazioni lato client prima dell'invio
-        const form = e.target;
-        const email = form.querySelector('#email')?.value;
-        const password = form.querySelector('#password')?.value;
-
-        // Validazione email
-        if (email && !this.isValidEmail(email)) {
-            e.preventDefault();
-            this.showError('Formato email non valido');
-            return false;
-        }
-
-        // --- INIZIO BLOCCO MODIFICATO: Validazione password robusta ---
-        if (!password) { 
-            e.preventDefault();
-            this.showError('La password è obbligatoria');
-            return false;
-        }
-        if (password.length < 8) { 
-            e.preventDefault();
-            this.showError('La password deve essere di almeno 8 caratteri');
-            return false;
-        }
-        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/;
-        if (!passwordRegex.test(password)) {
-            e.preventDefault();
-            this.showError('La password deve contenere almeno una maiuscola, una minuscola, un numero e un carattere speciale');
-            return false;
-        }
-
-        console.log('Form di login valido, invio al server');
-    }
-
 
     handleLogout(e) {
         console.log('Logout richiesto');
