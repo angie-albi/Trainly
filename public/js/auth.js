@@ -18,7 +18,7 @@ class AuthManager {
     }
 
     handleLogout(e) {
-        console.log('Logout richiesto');
+        console.log('Logout');
     }
 
     // Utilità per validazione email
@@ -56,7 +56,6 @@ class AuthManager {
     updateUI() {
         // Questo metodo può essere utilizzato per aggiornare l'interfaccia
         // in base ai dati ricevuti dal server (tramite variabili EJS)
-        console.log('UI aggiornata');
     }
 }
 

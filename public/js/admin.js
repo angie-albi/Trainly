@@ -283,7 +283,6 @@ function searchProducts() {
 
 // ───────── INIT ─────────
 document.addEventListener('DOMContentLoaded', async () => {
-    console.log('Inizializzazione pannello admin...');
     
     // Carica i prodotti
     await fetchProducts();
@@ -300,5 +299,4 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
 
-    console.log('Pannello admin inizializzato!');
 });

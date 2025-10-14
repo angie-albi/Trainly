@@ -1,7 +1,6 @@
 // Gestione ricerca
 let searchManager = {
     init: function() {
-        console.log('Search manager inizializzato');
         this.bindEvents();
     },
 
@@ -57,8 +56,6 @@ let searchManager = {
 
     performSearch: function(query) {
         if (!query.trim()) return;
-
-        console.log('Ricerca per:', query);
         
         // Chiudi l'offcanvas di ricerca
         const searchOffcanvas = document.getElementById('offcanvasTop');

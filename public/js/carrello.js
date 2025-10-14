@@ -1,4 +1,4 @@
-// Aggiungi queste variabili all'inizio del file
+// Variabili globali
 let carrello = [];
 let isUserAuthenticated = false;
 let userId = null;
@@ -16,97 +16,78 @@ async function checkAuthStatus() {
             userId = data.user.id;
             return true;
         }
+        isUserAuthenticated = false;
         return false;
     } catch (error) {
         console.error('Errore verifica autenticazione:', error);
+        isUserAuthenticated = false;
         return false;
     }
 }
 
-// Carica il carrello 
+// Carica il carrello dal DB se l'utente è loggato, altrimenti dal localStorage
 async function caricaCarrello() {
     try {
-        // Prima controlla se c'è un carrello nel localStorage
-        const carrelloSalvato = localStorage.getItem('trainlyCart');
-        
-        // Verifica se l'utente è autenticato
         const isAuthenticated = await checkAuthStatus();
         
         if (isAuthenticated) {
-            // Se autenticato, carica dal database
-            try {
-                const response = await fetch('/api/cart', {
-                    credentials: 'include'
-                });
-                
-                if (response.ok) {
-                    const data = await response.json();
-                    if (data.success) {
-                        carrello = data.items.map(item => ({
-                            id: item.product_id.toString(),
-                            title: item.name,
-                            price: parseFloat(item.price),
-                            category: '', 
-                            image: item.image_url || '',
-                            quantity: item.quantity
-                        }));
-                        
-                        // Sincronizza con localStorage come backup
-                        localStorage.setItem('trainlyCart', JSON.stringify(carrello));
-                        return;
-                    }
+            // Se l'utente è autenticato, carica dal database
+            const response = await fetch('/api/cart', { credentials: 'include' });
+            if (response.ok) {
+                const data = await response.json();
+                if (data.success) {
+                    carrello = data.items.map(item => ({
+                        id: String(item.product_id),
+                        title: item.name,
+                        price: parseFloat(item.price),
+                        category: item.category || '',
+                        image: item.image_url || '',
+                        quantity: item.quantity
+                    }));
+                    salvaCarrello(); 
+                    aggiornaInterfacciaCarrello();
+                    return;
                 }
-            } catch (error) {
-                console.error('Errore caricamento carrello dal database:', error);
             }
         }
         
-        // Fallback al localStorage se non autenticato o errore
-        if (carrelloSalvato) {
-            carrello = JSON.parse(carrelloSalvato);
-        } else {
-            carrello = [];
-        }
+        // Fallback al localStorage se non autenticato o in caso di errore
+        const carrelloSalvato = localStorage.getItem('trainlyCart');
+        carrello = carrelloSalvato ? JSON.parse(carrelloSalvato) : [];
+        
     } catch (error) {
         console.error('Errore nel caricare il carrello:', error);
         carrello = [];
     }
+    aggiornaInterfacciaCarrello();
 }
 
-// Aggiorna il carrello 
+// Aggiunge un prodotto al carrello 
 async function aggiungiAlCarrello(prodotto) {
     const prodottoEsistente = carrello.find(item => item.id === prodotto.id);
     
     if (prodottoEsistente) {
-        prodottoEsistente.quantity = (prodottoEsistente.quantity || 1) + 1;
+        prodottoEsistente.quantity++;
     } else {
         prodotto.quantity = 1;
         carrello.push(prodotto);
     }
     
-    // Salva nel localStorage come backup per utenti non registrati
-    salvaCarrello();
+    salvaCarrello(); 
     
-    // Se l'utente è autenticato, salva anche nel database
     if (isUserAuthenticated) {
         try {
-            const response = await fetch('/api/cart', {
+            await fetch('/api/cart', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json' },
                 credentials: 'include',
                 body: JSON.stringify({
                     product_id: prodotto.id,
-                    quantity: prodottoEsistente ? prodottoEsistente.quantity : 1
+                    quantity: 1 
                 })
             });
-            
-            if (!response.ok) {
-                console.error('Errore salvataggio carrello nel database');
-            }
         } catch (error) {
-            console.error('Errore sincronizzazione carrello:', error);
+            console.error('Errore sincronizzazione aggiunta carrello:', error);
         }
     }
     
@@ -114,36 +95,26 @@ async function aggiungiAlCarrello(prodotto) {
     mostraToastAggiunto(prodotto.title);
 }
 
-// Rimuove prodotto dal carrello
+// Rimuove un prodotto dal carrello
 async function rimuoviDalCarrello(idProdotto) {
     const indice = carrello.findIndex(prodotto => prodotto.id == idProdotto);
     if (indice !== -1) {
         const prodottoRimosso = carrello[indice];
         carrello.splice(indice, 1);
-        
-        // Salva nel localStorage per utneti non registrati
         salvaCarrello();
         
-        // Se l'utente è autenticato, rimuovi anche dal database
         if (isUserAuthenticated) {
             try {
-                const response = await fetch('/api/cart', {
-                    credentials: 'include'
-                });
-                
+                const response = await fetch('/api/cart', { credentials: 'include' });
                 if (response.ok) {
                     const data = await response.json();
                     if (data.success) {
                         const cartItem = data.items.find(item => item.product_id == idProdotto);
                         if (cartItem) {
-                            const deleteResponse = await fetch(`/api/cart/${cartItem.id}`, {
+                            await fetch(`/api/cart/${cartItem.id}`, {
                                 method: 'DELETE',
                                 credentials: 'include'
                             });
-                            
-                            if (!deleteResponse.ok) {
-                                console.error('Errore rimozione prodotto dal database');
-                            }
                         }
                     }
                 }
@@ -156,120 +127,218 @@ async function rimuoviDalCarrello(idProdotto) {
     }
 }
 
-// Modifca quantita prodotto
+// Modifica la quantità di un prodotto 
 async function modificaQuantita(idProdotto, nuovaQuantita) {
     const prodotto = carrello.find(item => item.id == idProdotto);
-    if (prodotto) {
-        if (nuovaQuantita <= 0) {
-            rimuoviDalCarrello(idProdotto);
-        } else {
-            prodotto.quantity = nuovaQuantita;
-            
-            // Salva nel localStorage per utenti non registrati
-            salvaCarrello();
-            
-            // Se l'utente è autenticato, aggiorna anche nel database
-            if (isUserAuthenticated) {
-                try {
-                    const response = await fetch('/api/cart', {
-                        credentials: 'include'
-                    });
-                    
-                    if (response.ok) {
-                        const data = await response.json();
-                        if (data.success) {
-                            const cartItem = data.items.find(item => item.product_id == idProdotto);
-                            if (cartItem) {
-                                const updateResponse = await fetch(`/api/cart/${cartItem.id}`, {
-                                    method: 'PUT',
-                                    headers: {
-                                        'Content-Type': 'application/json',
-                                    },
-                                    credentials: 'include',
-                                    body: JSON.stringify({
-                                        quantity: nuovaQuantita
-                                    })
-                                });
-                                
-                                if (!updateResponse.ok) {
-                                    console.error('Errore aggiornamento quantità nel database');
-                                }
-                            } else if (nuovaQuantita > 0) {
-                                const addResponse = await fetch('/api/cart', {
-                                    method: 'POST',
-                                    headers: {
-                                        'Content-Type': 'application/json',
-                                    },
-                                    credentials: 'include',
-                                    body: JSON.stringify({
-                                        product_id: idProdotto,
-                                        quantity: nuovaQuantita
-                                    })
-                                });
-                                
-                                if (!addResponse.ok) {
-                                    console.error('Errore aggiunta prodotto al database');
-                                }
-                            }
-                        }
+    if (!prodotto) return;
+
+    if (nuovaQuantita <= 0) {
+        rimuoviDalCarrello(idProdotto);
+        return;
+    }
+
+    prodotto.quantity = nuovaQuantita;
+    salvaCarrello();
+
+    if (isUserAuthenticated) {
+        try {
+            const response = await fetch('/api/cart', { credentials: 'include' });
+            if (response.ok) {
+                const data = await response.json();
+                if (data.success) {
+                    const cartItem = data.items.find(item => item.product_id == idProdotto);
+                    if (cartItem) {
+                        await fetch(`/api/cart/${cartItem.id}`, {
+                            method: 'PUT',
+                            headers: { 'Content-Type': 'application/json' },
+                            credentials: 'include',
+                            body: JSON.stringify({ quantity: nuovaQuantita })
+                        });
                     }
-                } catch (error) {
-                    console.error('Errore sincronizzazione quantità:', error);
                 }
             }
-            
-            aggiornaInterfacciaCarrello();
+        } catch (error) {
+            console.error('Errore sincronizzazione quantità:', error);
         }
     }
+    
+    aggiornaInterfacciaCarrello();
 }
 
-// Sincronizzazione carrello al login
+// Sincronizza il carrello del localStorage con il DB dopo il login
 async function sincronizzaCarrelloAlLogin() {
     const isAuthenticated = await checkAuthStatus();
-    
-    if (isAuthenticated && carrello.length > 0) {
+    const carrelloLocale = JSON.parse(localStorage.getItem('trainlyCart') || '[]');
+
+    if (isAuthenticated && carrelloLocale.length > 0) {
         try {
-            for (const prodotto of carrello) {
-                const response = await fetch('/api/cart', {
+            for (const prodotto of carrelloLocale) {
+                await fetch('/api/cart', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     credentials: 'include',
                     body: JSON.stringify({
                         product_id: prodotto.id,
                         quantity: prodotto.quantity || 1
                     })
                 });
-                
-                if (!response.ok) {
-                    console.error(`Errore sincronizzazione prodotto ${prodotto.id}`);
-                }
             }
-            
-            const response = await fetch('/api/cart', {
-                credentials: 'include'
-            });
-            
-            if (response.ok) {
-                const data = await response.json();
-                if (data.success) {
-                    carrello = data.items.map(item => ({
-                        id: item.product_id.toString(),
-                        title: item.name,
-                        price: parseFloat(item.price),
-                        category: '',
-                        image: item.image_url || '',
-                        quantity: item.quantity
-                    }));
-                    
-                    // Aggiorna il localStorage
-                    salvaCarrello();
-                    aggiornaInterfacciaCarrello();
-                }
-            }
+            await caricaCarrello();
         } catch (error) {
             console.error('Errore sincronizzazione carrello al login:', error);
         }
     }
 }
+
+
+
+// Salva il carrello nel localStorage
+function salvaCarrello() {
+    try {
+        localStorage.setItem('trainlyCart', JSON.stringify(carrello));
+    } catch (error) {
+        console.error('Errore nel salvare il carrello nel localStorage:', error);
+    }
+}
+
+// Calcola il totale del carrello
+function calcolaTotale() {
+    return carrello.reduce((totale, prodotto) => totale + (prodotto.price * prodotto.quantity), 0);
+}
+
+// Conta il numero totale di articoli nel carrello
+function contaArticoli() {
+    return carrello.reduce((totale, prodotto) => totale + prodotto.quantity, 0);
+}
+
+// Aggiorna l'interfaccia grafica del carrello
+function aggiornaInterfacciaCarrello() {
+    const carrelloOffcanvas = document.querySelector('#cartOffcanvas .offcanvas-body');
+    if (!carrelloOffcanvas) return;
+
+    const numeroArticoli = contaArticoli();
+
+    if (carrello.length === 0) {
+        carrelloOffcanvas.innerHTML = `
+            <div class="text-center h3 mb-3 text-decoration-none">Il tuo carrello è vuoto</div>
+            <a class="btn btn-light" href="/catalogo" role="button">Continua lo shopping</a>
+        `;
+    } else {
+        let htmlCarrello = '<div class="carrello-lista">';
+        carrello.forEach(prodotto => {
+            htmlCarrello += `
+                <div class="carrello-item border-bottom p-3 bg-white rounded mb-2" data-id="${prodotto.id}">
+                    <div class="row align-items-center text-black">
+                        <div class="col-3">
+                            <img src="${prodotto.image || '/img/placeholder.png'}" class="img-fluid rounded" alt="${prodotto.title}">
+                        </div>
+                        <div class="col-6">
+                            <h6 class="mb-1">${prodotto.title}</h6>
+                            <div class="d-flex align-items-center mt-2">
+                                <button class="btn btn-sm btn-outline text-black" onclick="modificaQuantita('${prodotto.id}', ${prodotto.quantity - 1})">-</button>
+                                <span class="mx-2">${prodotto.quantity}</span>
+                                <button class="btn btn-sm btn-outline text-black" onclick="modificaQuantita('${prodotto.id}', ${prodotto.quantity + 1})">+</button>
+                            </div>
+                        </div>
+                        <div class="col-3 text-end">
+                            <div class="fw-bold">${(prodotto.price * prodotto.quantity).toFixed(2)}€</div>
+                            <button class="btn btn-sm btn-delete mt-1" onclick="rimuoviDalCarrello('${prodotto.id}')">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+        htmlCarrello += `</div>
+            <div class="carrello-footer mt-4 bg-white rounded p-3 shadow-sm">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <strong class="text-dark fs-7">Totale: ${calcolaTotale().toFixed(2)}€</strong>
+                    <small class="text-muted">${numeroArticoli} articol${numeroArticoli === 1 ? 'o' : 'i'}</small>
+                </div> 
+                <button class="btn btn-checkout w-100 mb-2 text-white" onclick="procediCheckout()">
+                    Procedi al checkout
+                </button>
+                <button class="btn btn-outline-secondary w-100" onclick="svuotaCarrello()">Svuota carrello</button>
+            </div>
+        `;
+        carrelloOffcanvas.innerHTML = htmlCarrello;
+    }
+    aggiornaBadgeCarrello();
+}
+
+// Aggiorna il badge del carrello sulla navbar
+function aggiornaBadgeCarrello() {
+    const numeroArticoli = contaArticoli();
+    document.querySelectorAll('.btn-carrello').forEach(bottone => {
+        let badge = bottone.querySelector('.badge');
+        if (numeroArticoli > 0) {
+            if (!badge) {
+                badge = document.createElement('span');
+                badge.className = 'badge bg-danger position-absolute top-0 start-100 translate-middle rounded-pill';
+                
+                bottone.style.position = 'relative'; 
+                
+                bottone.appendChild(badge);
+            }
+            badge.textContent = numeroArticoli > 99 ? '99+' : numeroArticoli;
+        } else if (badge) {
+            badge.remove();
+        }
+    });
+}
+
+// Svuota completamente il carrello
+function svuotaCarrello() {
+    if (confirm('Sei sicuro di voler svuotare il carrello?')) {
+        carrello = [];
+        salvaCarrello();
+        if (isUserAuthenticated) {
+            fetch('/api/cart/all', { method: 'DELETE', credentials: 'include' });
+        }
+        aggiornaInterfacciaCarrello();
+    }
+}
+
+// Reindirizza alla pagina di checkout
+function procediCheckout() {
+    if (carrello.length === 0) {
+        alert('Il carrello è vuoto!');
+        return;
+    }
+    window.location.href = '/checkout';
+}
+
+// Mostra una notifica (toast) quando un prodotto viene aggiunto
+function mostraToastAggiunto(nomeProdotto) {
+    let toastContainer = document.querySelector('.toast-container');
+    if (!toastContainer) {
+        toastContainer = document.createElement('div');
+        toastContainer.className = 'toast-container position-fixed bottom-0 end-0 p-3';
+        document.body.appendChild(toastContainer);
+    }
+    const toastHtml = `
+        <div class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">"${nomeProdotto}" aggiunto al carrello!</div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+            </div>
+        </div>
+    `;
+    toastContainer.insertAdjacentHTML('beforeend', toastHtml);
+    const nuovoToast = toastContainer.lastElementChild;
+    const toast = new bootstrap.Toast(nuovoToast, { delay: 3000 });
+    toast.show();
+    nuovoToast.addEventListener('hidden.bs.toast', () => nuovoToast.remove());
+}
+
+
+// Funioni globali per accesso da HTML
+window.aggiungiAlCarrello = aggiungiAlCarrello;
+window.rimuoviDalCarrello = rimuoviDalCarrello;
+window.modificaQuantita = modificaQuantita;
+window.svuotaCarrello = svuotaCarrello;
+window.procediCheckout = procediCheckout;
+
+// Carica carrello al caricamento della pagina
+document.addEventListener('DOMContentLoaded', caricaCarrello);

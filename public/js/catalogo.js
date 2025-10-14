@@ -52,7 +52,6 @@ async function loadProducts() {
     try {
         const response = await fetch('/api/products');
         const result = await response.json();
-        console.log("Prodotti dal server:", result);
 
         if (result && result.success && Array.isArray(result.data)) {
             // IMPORTANT: salva array nei globali
