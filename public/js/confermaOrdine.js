@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', async function() {
     // Legge il parametro 'order' dall'URL
     const urlParams = new URLSearchParams(window.location.search);
-    const orderId = urlParams.get('order');
+    const orderId = urlParams.get('orderId');
 
     // Se non c'è un ID nell'URL, non possiamo procedere
     if (!orderId) {

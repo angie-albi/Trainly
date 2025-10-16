@@ -35,9 +35,10 @@ router.get('/checkout', isAuthenticated, (req, res) => {
     });
 });
 
+
 // CONFERMA ORDINE
 router.get('/confermaOrdine', isAuthenticated, (req, res) => {
-    const orderId = req.query.order; // Legge l'ID dell'ordine dall'URL
+    const orderId = req.query.orderId; // Legge l'ID dell'ordine dall'URL
     if (!orderId) {
         // Se non c'è un ID, non possiamo mostrare nulla, quindi reindirizziamo al profilo
         return res.redirect('/profiloUtente');

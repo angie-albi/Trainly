@@ -251,7 +251,7 @@ document.addEventListener('DOMContentLoaded', () => {
             localStorage.removeItem('tempCart');
 
             setTimeout(() => {
-                window.location.href = `/confermaOrdine?order=${data.orderId}`;
+                window.location.href = `/confermaOrdine?orderId=${data.orderId}`;
             }, 2500);
 
         } catch (err) {
