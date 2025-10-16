@@ -36,11 +36,16 @@ router.get('/checkout', isAuthenticated, (req, res) => {
 });
 
 // CONFERMA ORDINE
-router.get('/confermaOrdine', (req, res) => {
+router.get('/confermaOrdine', isAuthenticated, (req, res) => {
+    const orderId = req.query.order;
+    if (!orderId) {
+        return res.redirect('/profiloUtente');
+    }
     res.render('confermaOrdine', {
         title: 'Conferma Ordine',
-        user: req.user || null,
+        user: req.user,
         currentPage: 'confermaOrdine',
+        orderId: orderId,
         extraJS: ['/js/confermaOrdine.js']
     });
 });

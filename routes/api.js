@@ -461,6 +461,56 @@ router.put('/user/profile', isAuthenticated, async (req, res) => {
     }
 });
 
+// GET /api/order/:id - Dettagli di un singolo ordine
+router.get('/order/:id', isAuthenticated, async (req, res) => {
+    try {
+        const orderId = req.params.id;
+        const userId = req.user.id;
+
+        // Recupera i dettagli dell'ordine e i dati dell'utente
+        const order = await new Promise((resolve, reject) => {
+            db.get(`
+                SELECT o.id, o.total, o.status, o.created_at, u.email, u.nome, u.cognome
+                FROM orders o
+                JOIN users u ON o.user_id = u.id
+                WHERE o.id = ? AND o.user_id = ?
+            `, [orderId, userId], (err, row) => {
+                if (err) reject(err);
+                else resolve(row);
+            });
+        });
+
+        if (!order) {
+            return res.status(404).json({ success: false, message: 'Ordine non trovato o non autorizzato' });
+        }
+
+        // Recupera gli articoli dell'ordine
+        const items = await new Promise((resolve, reject) => {
+            db.all(`
+                SELECT oi.quantity, oi.unit_price, p.name as title
+                FROM order_items oi
+                JOIN products p ON oi.product_id = p.id
+                WHERE oi.order_id = ?
+            `, [orderId], (err, rows) => {
+                if (err) reject(err);
+                else resolve(rows);
+            });
+        });
+
+        res.json({
+            success: true,
+            order: {
+                ...order,
+                items: items
+            }
+        });
+
+    } catch (error) {
+        console.error('Errore nel recupero dei dettagli dell\'ordine:', error);
+        res.status(500).json({ success: false, message: 'Errore interno del server' });
+    }
+});
+
 // GET /api/user/orders - Ottieni ordini dell'utente
 router.get('/user/orders', isAuthenticated, async (req, res) => {
     try {
