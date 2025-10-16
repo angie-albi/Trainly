@@ -383,7 +383,9 @@ function addAdminPanel() {
 
 function getStatusColor(status) {
     switch(status) {
-        case 'completed': return 'success';
+        case 'completed':
+        case 'confermato': 
+            return 'success';
         case 'pending': return 'warning';
         case 'cancelled': return 'danger';
         case 'processing': return 'info';
@@ -393,7 +395,9 @@ function getStatusColor(status) {
 
 function getStatusText(status) {
     switch(status) {
-        case 'completed': return 'Completato';
+        case 'completed':
+        case 'confermato':
+            return 'Confermato';
         case 'pending': return 'In attesa';
         case 'cancelled': return 'Annullato';
         case 'processing': return 'In elaborazione';
