@@ -37,15 +37,16 @@ router.get('/checkout', isAuthenticated, (req, res) => {
 
 // CONFERMA ORDINE
 router.get('/confermaOrdine', isAuthenticated, (req, res) => {
-    const orderId = req.query.order;
+    const orderId = req.query.order; // Legge l'ID dell'ordine dall'URL
     if (!orderId) {
+        // Se non c'è un ID, non possiamo mostrare nulla, quindi reindirizziamo al profilo
         return res.redirect('/profiloUtente');
     }
     res.render('confermaOrdine', {
         title: 'Conferma Ordine',
         user: req.user,
         currentPage: 'confermaOrdine',
-        orderId: orderId,
+        orderId: orderId, // Passa l'ID alla pagina
         extraJS: ['/js/confermaOrdine.js']
     });
 });

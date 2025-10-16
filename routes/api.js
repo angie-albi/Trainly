@@ -467,7 +467,7 @@ router.get('/order/:id', isAuthenticated, async (req, res) => {
         const orderId = req.params.id;
         const userId = req.user.id;
 
-        // Recupera i dettagli dell'ordine e i dati dell'utente
+        // Recupera i dettagli dell'ordine
         const order = await new Promise((resolve, reject) => {
             db.get(`
                 SELECT o.id, o.total, o.status, o.created_at, u.email, u.nome, u.cognome
@@ -481,7 +481,7 @@ router.get('/order/:id', isAuthenticated, async (req, res) => {
         });
 
         if (!order) {
-            return res.status(404).json({ success: false, message: 'Ordine non trovato o non autorizzato' });
+            return res.status(404).json({ success: false, message: 'Ordine non trovato' });
         }
 
         // Recupera gli articoli dell'ordine
@@ -506,7 +506,7 @@ router.get('/order/:id', isAuthenticated, async (req, res) => {
         });
 
     } catch (error) {
-        console.error('Errore nel recupero dei dettagli dell\'ordine:', error);
+        console.error('Errore nel recupero dei dettagli dellordine:', error);
         res.status(500).json({ success: false, message: 'Errore interno del server' });
     }
 });
