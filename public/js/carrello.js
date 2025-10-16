@@ -225,7 +225,7 @@ function aggiornaInterfacciaCarrello() {
             <a class="btn btn-light" href="/catalogo" role="button">Continua lo shopping</a>
         `;
     } else {
-        carrelloOffcanvas.className = 'offcanvas-body mx-3 d-flex flex-column';
+        carrelloOffcanvas.className = 'offcanvas-body px-4 d-flex flex-column';
 
         let bottoneAzioneHtml = '';
         if (isUserAuthenticated) {

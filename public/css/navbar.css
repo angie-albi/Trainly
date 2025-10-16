@@ -109,7 +109,7 @@ footer {
     .sidenav {
       display: none;
     }
-  }
+}
 
 
 .navbar-toggler:focus{
@@ -138,4 +138,8 @@ footer {
 .btn-custom {
     background: linear-gradient(90deg, royalblue, rgb(17, 57, 133)) !important;
     border: none;
+}
+
+.carrello-footer .btn-checkout {
+    background: rgb(24, 72, 162);
 }

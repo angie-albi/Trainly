@@ -21,8 +21,7 @@ router.get('/catalogo', (req, res) => {
     res.render('catalogo', {
         title: 'Catalogo',
         user: req.user || null,
-        currentPage: 'catalogo',
-        extraJS: ['/js/catalogo.js']
+        currentPage: 'catalogo'
     });
 });
 
