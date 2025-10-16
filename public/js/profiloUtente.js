@@ -402,7 +402,7 @@ function getStatusText(status) {
 }
 
 function viewOrderDetails(orderId) {
-    window.location.href = `/confermaOrdine?order=${orderId}`;
+    window.location.href = `/confermaOrdine?orderId=${orderId}`;
 }
 
 function showErrorMessage(message) {
