@@ -1,18 +1,19 @@
 // admin.js – Gestione prodotti collegata al backend (DB)
 
-let products = [];
+let allProducts = [];
+let allOrders = [];
 
 // ───────── API ─────────
 async function fetchProducts() {
     try {
         const res = await fetch('/api/products');
         const data = await res.json();
-        if (data.success) {
-            products = data.products || data.data || [];
-            displayProducts();
+        if (data.success && Array.isArray(data.data)) {
+            allProducts = data.data; // Usa data.data come fornito dall'API
+            displayProducts(allProducts);
             updateStats();
         } else {
-            showToast('Errore nel caricamento prodotti', 'error');
+            showToast('Errore nel caricamento dei prodotti: ' + (data.message || 'formato dati non valido'), 'error');
         }
     } catch (err) {
         console.error('Errore fetchProducts:', err);
@@ -30,7 +31,7 @@ async function saveProductToServer(product, productId = null) {
         return await res.json();
     } catch (err) {
         console.error('Errore salvataggio prodotto:', err);
-        return { success: false, message: 'Errore server' };
+        return { success: false, message: 'Errore di connessione durante il salvataggio' };
     }
 }
 
@@ -40,12 +41,12 @@ async function deleteProductFromServer(productId) {
         return await res.json();
     } catch (err) {
         console.error('Errore eliminazione prodotto:', err);
-        return { success: false, message: 'Errore server' };
+        return { success: false, message: 'Errore di connessione durante l\'eliminazione' };
     }
 }
 
 // ───────── UI ─────────
-function displayProducts(productsToShow = products) {
+function displayProducts(productsToShow = allProducts) {
     const tbody = document.getElementById('productsTable');
     if (!tbody) return;
 
@@ -66,13 +67,13 @@ function displayProducts(productsToShow = products) {
         const row = document.createElement('tr');
         row.innerHTML = `
             <td>
-                <img src="${product.image_url || product.image || '/assest/img/placeholder.png'}" 
-                     alt="${product.name || product.title || ''}" 
+                <img src="${product.image || '/img/placeholder.png'}" 
+                     alt="${product.title || ''}" 
                      style="width: 50px; height: 50px; object-fit: cover;" 
                      class="rounded"
-                     onerror="this.src='/assest/img/placeholder.png'">
+                     onerror="this.src='/img/placeholder.png'">
             </td>
-            <td><strong>${product.name || product.title || ''}</strong></td>
+            <td><strong>${product.title || ''}</strong></td>
             <td><span class="badge bg-${getCategoryColor(product.category)}">${getCategoryName(product.category)}</span></td>
             <td><strong>€${(product.price || 0).toFixed(2)}</strong></td>
             <td>
@@ -90,10 +91,10 @@ function updateStats() {
     const coachingEl = document.getElementById('totalCoaching');
     const ebooksEl = document.getElementById('totalEbooks');
 
-    if (totalEl) totalEl.textContent = products.length;
-    if (programsEl) programsEl.textContent = products.filter(p => p.category === 'programma').length;
-    if (coachingEl) coachingEl.textContent = products.filter(p => p.category === 'coaching').length;
-    if (ebooksEl) ebooksEl.textContent = products.filter(p => p.category === 'ebook' || p.category === 'e-book').length;
+    if (totalEl) totalEl.textContent = allProducts.length;
+    if (programsEl) programsEl.textContent = allProducts.filter(p => p.category === 'programma').length;
+    if (coachingEl) coachingEl.textContent = allProducts.filter(p => p.category === 'coaching').length;
+    if (ebooksEl) ebooksEl.textContent = allProducts.filter(p => p.category === 'ebook' || p.category === 'e-book').length;
 }
 
 function getCategoryColor(category) {
@@ -133,7 +134,7 @@ function openAddModal() {
 }
 
 function editProduct(productId) {
-    const product = products.find(p => p.id == productId);
+    const product = allProducts.find(p => p.id == productId);
     if (!product) {
         showToast('Prodotto non trovato', 'error');
         return;
@@ -151,10 +152,10 @@ function editProduct(productId) {
 
     if (elements.modalTitle) elements.modalTitle.textContent = 'Modifica Prodotto';
     if (elements.productId) elements.productId.value = product.id;
-    if (elements.productTitle) elements.productTitle.value = product.name || product.title || '';
+    if (elements.productTitle) elements.productTitle.value = product.title || '';
     if (elements.productCategory) elements.productCategory.value = product.category || '';
     if (elements.productPrice) elements.productPrice.value = product.price || 0;
-    if (elements.productImage) elements.productImage.value = product.image_url || product.image || '';
+    if (elements.productImage) elements.productImage.value = product.image || '';
     if (elements.productDescription) elements.productDescription.value = product.description || '';
 
     const modal = document.getElementById('productModal');
@@ -168,9 +169,10 @@ async function saveProduct() {
     if (!form) return;
 
     if (!form.checkValidity()) {
-        form.reportValidity();
+        form.classList.add('was-validated');
         return;
     }
+    form.classList.remove('was-validated');
 
     const elements = {
         productId: document.getElementById('productId'),
@@ -183,12 +185,10 @@ async function saveProduct() {
 
     const productId = elements.productId ? elements.productId.value : '';
     const productData = {
-        name: elements.productTitle ? elements.productTitle.value.trim() : '',
-        title: elements.productTitle ? elements.productTitle.value.trim() : '', // Compatibilità
+        name: elements.productTitle ? elements.productTitle.value.trim() : '', // L'API si aspetta 'name'
         category: elements.productCategory ? elements.productCategory.value : '',
         price: elements.productPrice ? parseFloat(elements.productPrice.value) || 0 : 0,
-        image_url: elements.productImage ? elements.productImage.value.trim() : '',
-        image: elements.productImage ? elements.productImage.value.trim() : '', // Compatibilità
+        image_url: elements.productImage ? elements.productImage.value.trim() : '', // L'API si aspetta 'image_url'
         description: elements.productDescription ? elements.productDescription.value.trim() : ''
     };
 
@@ -204,54 +204,43 @@ async function saveProduct() {
                 if (modalInstance) modalInstance.hide();
             }
             
-            await fetchProducts(); // Ricarica i prodotti
+            await fetchProducts();
         } else {
-            showToast(result?.message || 'Errore salvataggio prodotto', 'error');
+            showToast(result?.message || 'Errore durante il salvataggio del prodotto', 'error');
         }
     } catch (error) {
         console.error('Errore in saveProduct:', error);
-        showToast('Errore durante il salvataggio', 'error');
+        showToast('Errore critico durante il salvataggio', 'error');
     }
 }
 
 async function deleteProduct(productId) {
-    if (!confirm('Sei sicuro di voler eliminare questo prodotto?')) return;
+    if (!confirm('Sei sicuro di voler eliminare questo prodotto? L\'azione è irreversibile.')) return;
 
     try {
         const result = await deleteProductFromServer(productId);
 
         if (result && result.success) {
             showToast('Prodotto eliminato!');
-            await fetchProducts(); // Ricarica i prodotti
+            await fetchProducts();
         } else {
-            showToast(result?.message || 'Errore eliminazione prodotto', 'error');
+            showToast(result?.message || 'Errore durante l\'eliminazione del prodotto', 'error');
         }
     } catch (error) {
         console.error('Errore in deleteProduct:', error);
-        showToast('Errore durante l\'eliminazione', 'error');
+        showToast('Errore critico durante l\'eliminazione', 'error');
     }
 }
 
-// ───────── UI PRODOTTI ─────────
-function displayProducts(productsToShow = products) {
-    // ... il tuo codice esistente per mostrare i prodotti ...
-}
-
-function updateStats() {
-    // ... il tuo codice esistente per le statistiche ...
-}
-
-// ... (tutte le altre funzioni per UI prodotti e CRUD restano invariate) ...
 
 // ========================================
-// NUOVE FUNZIONI PER LA GESTIONE ORDINI
+// FUNZIONI PER LA GESTIONE ORDINI
 // ========================================
 
-// Funzione per recuperare tutti gli ordini dall'API
 async function fetchOrders() {
     try {
         const response = await fetch('/api/admin/orders');
-        if (!response.ok) throw new Error('Errore di rete o autorizzazione');
+        if (!response.ok) throw new Error(`Errore di rete o autorizzazione: ${response.statusText}`);
         
         const result = await response.json();
         if (result.success) {
@@ -264,17 +253,16 @@ async function fetchOrders() {
         console.error('Errore nel fetch degli ordini:', error);
         const tableBody = document.getElementById('ordersTableBody');
         if (tableBody) {
-            tableBody.innerHTML = `<tr><td colspan="6" class="text-center text-danger py-4">Impossibile caricare gli ordini.</td></tr>`;
+            tableBody.innerHTML = `<tr><td colspan="6" class="text-center text-danger py-4">Impossibile caricare gli ordini. Controlla la connessione e i permessi.</td></tr>`;
         }
     }
 }
 
-// Funzione per mostrare gli ordini nella tabella
 function displayOrders(orders) {
     const tableBody = document.getElementById('ordersTableBody');
     if (!tableBody) return;
 
-    tableBody.innerHTML = ''; // Pulisce la tabella
+    tableBody.innerHTML = '';
 
     if (orders.length === 0) {
         tableBody.innerHTML = `<tr><td colspan="6" class="text-center text-muted py-4">Nessun ordine trovato.</td></tr>`;
@@ -303,7 +291,6 @@ function displayOrders(orders) {
     });
 }
 
-// Funzione di ricerca per gli ordini
 function searchOrders() {
     const searchInput = document.getElementById('orderSearchInput');
     const searchTerm = searchInput.value.toLowerCase().trim();
@@ -318,7 +305,6 @@ function searchOrders() {
     displayOrders(filteredOrders);
 }
 
-// Helpers per lo stato degli ordini
 function getStatusColor(status) {
     const colors = { 'confermato': 'success', 'pending': 'warning', 'cancelled': 'danger' };
     return colors[status] || 'secondary';
@@ -335,7 +321,6 @@ function showToast(message, type = 'success') {
     const toastMessage = document.getElementById('toastMessage');
     
     if (!toastEl || !toastMessage) {
-        console.warn('Elementi toast non trovati, uso alert:', message);
         alert(message);
         return;
     }
@@ -361,16 +346,16 @@ function searchProducts() {
 
     const term = searchInput.value.toLowerCase().trim();
     if (!term) {
-        displayProducts(); // Mostra tutti i prodotti
+        displayProducts(allProducts);
         return;
     }
 
-    const filtered = products.filter(product => {
-        const name = (product.name || product.title || '').toLowerCase();
+    const filtered = allProducts.filter(product => {
+        const title = (product.title || '').toLowerCase();
         const description = (product.description || '').toLowerCase();
         const category = (product.category || '').toLowerCase();
         
-        return name.includes(term) || 
+        return title.includes(term) || 
                description.includes(term) || 
                category.includes(term);
     });
@@ -379,27 +364,16 @@ function searchProducts() {
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
-    
-    // Carica sia i prodotti che gli ordini all'avvio
     await fetchProducts();
     await fetchOrders(); 
     
-    // Setup ricerca prodotti
     const productSearchInput = document.getElementById('searchInput');
     if (productSearchInput) {
         productSearchInput.addEventListener('input', searchProducts);
-        // ... (resto del setup per la ricerca prodotti) ...
     }
 
-    // Setup ricerca ordini
     const orderSearchInput = document.getElementById('orderSearchInput');
     if (orderSearchInput) {
         orderSearchInput.addEventListener('input', searchOrders);
-        orderSearchInput.addEventListener('keypress', e => {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                searchOrders();
-            }
-        });
     }
 });
