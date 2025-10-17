@@ -232,6 +232,103 @@ async function deleteProduct(productId) {
     }
 }
 
+// ───────── UI PRODOTTI ─────────
+function displayProducts(productsToShow = products) {
+    // ... il tuo codice esistente per mostrare i prodotti ...
+}
+
+function updateStats() {
+    // ... il tuo codice esistente per le statistiche ...
+}
+
+// ... (tutte le altre funzioni per UI prodotti e CRUD restano invariate) ...
+
+// ========================================
+// NUOVE FUNZIONI PER LA GESTIONE ORDINI
+// ========================================
+
+// Funzione per recuperare tutti gli ordini dall'API
+async function fetchOrders() {
+    try {
+        const response = await fetch('/api/admin/orders');
+        if (!response.ok) throw new Error('Errore di rete o autorizzazione');
+        
+        const result = await response.json();
+        if (result.success) {
+            allOrders = result.orders;
+            displayOrders(allOrders);
+        } else {
+            showToast(result.message || 'Impossibile caricare gli ordini', 'error');
+        }
+    } catch (error) {
+        console.error('Errore nel fetch degli ordini:', error);
+        const tableBody = document.getElementById('ordersTableBody');
+        if (tableBody) {
+            tableBody.innerHTML = `<tr><td colspan="6" class="text-center text-danger py-4">Impossibile caricare gli ordini.</td></tr>`;
+        }
+    }
+}
+
+// Funzione per mostrare gli ordini nella tabella
+function displayOrders(orders) {
+    const tableBody = document.getElementById('ordersTableBody');
+    if (!tableBody) return;
+
+    tableBody.innerHTML = ''; // Pulisce la tabella
+
+    if (orders.length === 0) {
+        tableBody.innerHTML = `<tr><td colspan="6" class="text-center text-muted py-4">Nessun ordine trovato.</td></tr>`;
+        return;
+    }
+
+    orders.forEach(order => {
+        const row = document.createElement('tr');
+        const orderDate = new Date(order.created_at).toLocaleDateString('it-IT', {
+            day: '2-digit', month: 'short', year: 'numeric'
+        });
+
+        row.innerHTML = `
+            <td><strong>#${order.id}</strong></td>
+            <td>${order.user_email}</td>
+            <td>${orderDate}</td>
+            <td><span class="badge bg-${getStatusColor(order.status)}">${getStatusText(order.status)}</span></td>
+            <td><strong>€${parseFloat(order.total).toFixed(2)}</strong></td>
+            <td>
+                <a href="/confermaOrdine?orderId=${order.id}" class="btn btn-sm btn-outline-primary" title="Vedi Dettagli">
+                    <i class="bi bi-eye"></i> Dettagli
+                </a>
+            </td>
+        `;
+        tableBody.appendChild(row);
+    });
+}
+
+// Funzione di ricerca per gli ordini
+function searchOrders() {
+    const searchInput = document.getElementById('orderSearchInput');
+    const searchTerm = searchInput.value.toLowerCase().trim();
+
+    const filteredOrders = !searchTerm
+        ? allOrders
+        : allOrders.filter(order => 
+            String(order.id).includes(searchTerm) || 
+            order.user_email.toLowerCase().includes(searchTerm)
+          );
+
+    displayOrders(filteredOrders);
+}
+
+// Helpers per lo stato degli ordini
+function getStatusColor(status) {
+    const colors = { 'confermato': 'success', 'pending': 'warning', 'cancelled': 'danger' };
+    return colors[status] || 'secondary';
+}
+
+function getStatusText(status) {
+    const texts = { 'confermato': 'Confermato', 'pending': 'In Attesa', 'cancelled': 'Annullato' };
+    return texts[status] || status;
+}
+
 // ───────── TOAST + LOGOUT ─────────
 function showToast(message, type = 'success') {
     const toastEl = document.getElementById('successToast');
@@ -281,22 +378,28 @@ function searchProducts() {
     displayProducts(filtered);
 }
 
-// ───────── INIT ─────────
 document.addEventListener('DOMContentLoaded', async () => {
     
-    // Carica i prodotti
+    // Carica sia i prodotti che gli ordini all'avvio
     await fetchProducts();
+    await fetchOrders(); 
     
-    // Setup ricerca
-    const searchInput = document.getElementById('searchInput');
-    if (searchInput) {
-        searchInput.addEventListener('input', searchProducts);
-        searchInput.addEventListener('keypress', function(e) {
+    // Setup ricerca prodotti
+    const productSearchInput = document.getElementById('searchInput');
+    if (productSearchInput) {
+        productSearchInput.addEventListener('input', searchProducts);
+        // ... (resto del setup per la ricerca prodotti) ...
+    }
+
+    // Setup ricerca ordini
+    const orderSearchInput = document.getElementById('orderSearchInput');
+    if (orderSearchInput) {
+        orderSearchInput.addEventListener('input', searchOrders);
+        orderSearchInput.addEventListener('keypress', e => {
             if (e.key === 'Enter') {
                 e.preventDefault();
-                searchProducts();
+                searchOrders();
             }
         });
     }
-
 });
