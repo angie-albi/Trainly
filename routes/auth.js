@@ -38,16 +38,15 @@ router.get('/checkout', isAuthenticated, (req, res) => {
 
 // CONFERMA ORDINE
 router.get('/confermaOrdine', isAuthenticated, (req, res) => {
-    const orderId = req.query.orderId; // Legge l'ID dell'ordine dall'URL
+    const orderId = req.query.orderId; 
     if (!orderId) {
-        // Se non c'è un ID, non possiamo mostrare nulla, quindi reindirizziamo al profilo
         return res.redirect('/profiloUtente');
     }
     res.render('confermaOrdine', {
         title: 'Conferma Ordine',
         user: req.user,
         currentPage: 'confermaOrdine',
-        orderId: orderId, // Passa l'ID alla pagina
+        orderId: orderId, 
         extraJS: ['/js/confermaOrdine.js']
     });
 });
@@ -147,8 +146,6 @@ router.post('/accedi', (req, res, next) => {
     if (err) return next(err);
     
     if (!user) {
-      // Controlla se è una richiesta AJAX/fetch
-      // Migliore modo per rilevare richieste AJAX
       const isAjax = req.xhr || 
                     req.headers['x-requested-with'] === 'XMLHttpRequest' ||
                     req.headers.accept.includes('application/json') ||
@@ -161,7 +158,6 @@ router.post('/accedi', (req, res, next) => {
         });
       }
       
-      // Se non è AJAX, usa il metodo tradizionale
       req.flash('error', 'Credenziali errate');
       return res.redirect('/accedi');
     }
@@ -169,7 +165,6 @@ router.post('/accedi', (req, res, next) => {
     req.logIn(user, (err) => {
       if (err) return next(err);
       
-      // Se è una richiesta AJAX, restituisci JSON
       const isAjax = req.xhr || 
                     req.headers['x-requested-with'] === 'XMLHttpRequest' ||
                     req.headers.accept.includes('application/json') ||
@@ -204,13 +199,13 @@ router.post('/registrati', async (req, res) => {
             return res.redirect('/registrati');
         }
 
-        const userExists = await userDao.findByEmail(email);
+        const userExists = await userDao.findByEmail(email); 
         if (userExists) {
             req.flash('error', 'Un utente con questa email è già registrato');
             return res.redirect('/registrati');
         }
 
-        const newUser = await userDao.create({
+        const newUser = await userDao.createUser({ 
             nome: nome.trim(),
             cognome: cognome.trim(),
             email: email.toLowerCase().trim(),
@@ -220,7 +215,6 @@ router.post('/registrati', async (req, res) => {
 
         console.log('Nuovo utente registrato:', newUser);
 
-        // Pulisci i dati del form dalla sessione
         delete req.session.formData;
 
         req.flash('success', 'Registrazione completata! Ora puoi accedere.');
@@ -268,19 +262,17 @@ function validateRegistrationData(data) {
         return 'La password deve essere di almeno 8 caratteri';
     }
     
-    // Validazione robustezza password
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/;
     if (!passwordRegex.test(password)) {
         return 'La password deve contenere almeno una lettera maiuscola, una minuscola, un numero e un carattere speciale';
     }
     
-    // Validazione formato email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
         return 'Formato email non valido';
     }
     
-    return null; // Nessun errore
+    return null;
 }
 
 

@@ -9,8 +9,9 @@ const orderDao = require('../models/dao/order-dao');
 const userDao = require('../models/dao/user-dao');
 const cartDao = require('../models/dao/cart-dao');
 const newsletterDao = require('../models/dao/newsletter-dao');
+const paymentDao = require('../models/dao/payment-dao');
 
-// Funzioni di validazione (puoi spostarle in un file di utility se preferisci)
+// Funzioni di validazione
 function validateEmail(email) {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
@@ -31,9 +32,7 @@ function isAdmin(req, res, next) {
     res.status(403).json({ success: false, message: 'Accesso negato - privilegi di amministratore richiesti' });
 }
 
-// =====================================
-// ROUTE PUBBLICHE
-// =====================================
+// ##### ROUTE PUBBLICHE #####
 
 // --- PRODOTTI ---
 router.get('/products', async (req, res) => {
@@ -82,9 +81,8 @@ router.post('/newsletter', async (req, res) => {
     }
 });
 
-// =====================================
-// ROUTE UTENTI AUTENTICATI
-// =====================================
+
+// ##### ROUTE UTENTI AUTENTICATI #####
 
 // --- PROFILO UTENTE ---
 router.get('/user/profile', isAuthenticated, (req, res) => {
@@ -97,7 +95,7 @@ router.put('/user/profile', isAuthenticated, async (req, res) => {
         const { nome, cognome, password } = req.body;
         let userData = { nome, cognome };
 
-        if (password) {
+        if (password && password.trim() !== '') {
             const hashedPassword = await bcrypt.hash(password, 10);
             userData.password = hashedPassword;
         }
@@ -187,22 +185,50 @@ router.get('/order/:id', isAuthenticated, async (req, res) => {
     }
 });
 
-// CHECKOUT (crea ordine)
+// --- CHECKOUT ---
 router.post('/checkout', isAuthenticated, async (req, res) => {
+    const userId = req.user.id;
+    const { payment } = req.body;
+
     try {
-        // Logica di checkout per creare l'ordine usando i DAO
-        // (Questa parte era già corretta e non necessita DAO specifici
-        // perché orchestra operazioni su più tabelle)
+        // 1. Recupera il carrello
+        const cartItems = await cartDao.getCartItems(userId);
+        if (cartItems.length === 0) {
+            return res.status(400).json({ success: false, message: 'Il carrello è vuoto.' });
+        }
+
+        // 2. Calcola il totale
+        const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+        const taxes = subtotal * 0.22;
+        const total = subtotal + taxes;
+
+        // 3. Crea l'ordine
+        const orderId = await orderDao.createOrder(userId, total);
+
+        // 4. Aggiungi gli articoli all'ordine
+        await orderDao.addOrderItems(orderId, cartItems);
+
+        // 5. Registra il pagamento
+        await paymentDao.createPayment({
+            orderId,
+            userId,
+            total,
+            method: payment.method
+        });
+
+        // 6. Svuota il carrello
+        await cartDao.clearCart(userId);
+
+        res.json({ success: true, orderId });
+
     } catch (error) {
+        console.error('Errore durante il checkout:', error);
         res.status(500).json({ success: false, message: 'Errore durante il checkout' });
     }
 });
 
 
-// =====================================
-// ROUTE ADMIN
-// =====================================
-
+// ###### ROUTE ADMIN ######
 router.post('/products', isAdmin, async (req, res) => {
     try {
         const productId = await productDao.createProduct(req.body);

@@ -3,7 +3,7 @@
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcrypt');
-const userDao = require('../models/dao/user-dao');
+const userDao = require('../models/dao/user-dao'); 
 
 module.exports = function(passport) {
     // Configurazione della strategia locale
@@ -14,7 +14,7 @@ module.exports = function(passport) {
         },
         async (email, password, done) => {
             try {
-                const user = await userDao.findByEmail(email);
+                const user = await userDao.findByEmail(email); 
                 
                 if (!user) {
                     return done(null, false, { message: 'Email non trovata' });
@@ -41,7 +41,7 @@ module.exports = function(passport) {
     // Deserializzazione dell'utente dalla sessione
     passport.deserializeUser(async (id, done) => {
         try {
-            const user = await userDao.findById(id);
+            const user = await userDao.findById(id); 
             done(null, user);
         } catch (error) {
             done(error);
