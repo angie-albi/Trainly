@@ -4,7 +4,7 @@ const express = require('express');
 const router = express.Router();
 const passport = require('passport');
 const bcrypt = require('bcrypt');
-const { UserModel } = require('../models/db');
+const userDao = require('../models/dao/user-dao');
 const { isAuthenticated, isAdmin } = require('../middleware/autorizzazioni');
 
 // HOME
@@ -204,13 +204,13 @@ router.post('/registrati', async (req, res) => {
             return res.redirect('/registrati');
         }
 
-        const userExists = await UserModel.findByEmail(email);
+        const userExists = await userDao.findByEmail(email);
         if (userExists) {
             req.flash('error', 'Un utente con questa email è già registrato');
             return res.redirect('/registrati');
         }
 
-        const newUser = await UserModel.create({
+        const newUser = await userDao.create({
             nome: nome.trim(),
             cognome: cognome.trim(),
             email: email.toLowerCase().trim(),

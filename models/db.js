@@ -1,3 +1,4 @@
+'use strict';
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 const bcrypt = require('bcrypt');
@@ -253,51 +254,4 @@ function initDatabase() {
     });
 }
 
-// Funzioni per gestire gli utenti
-class UserModel {
-    static findByEmail(email) {
-        return new Promise((resolve, reject) => {
-            db.get('SELECT * FROM users WHERE email = ?', [email], (err, row) => {
-                if (err) reject(err);
-                else resolve(row);
-            });
-        });
-    }
-
-    static findById(id) {
-        return new Promise((resolve, reject) => {
-            db.get('SELECT * FROM users WHERE id = ?', [id], (err, row) => {
-                if (err) reject(err);
-                else resolve(row);
-            });
-        });
-    }
-
-    static async create(userData) {
-        const { email, password, nome, cognome, role = 'user' } = userData;
-        const existing = await this.findByEmail(email);
-        if (existing) {
-            throw new Error('Email già registrata');
-        }
-        const hashedPassword = await bcrypt.hash(password, 10);
-        return new Promise((resolve, reject) => {
-            db.run(
-            `INSERT INTO users (email, password, nome, cognome, role) VALUES (?, ?, ?, ?, ?)`,
-            [email, hashedPassword, nome, cognome, role],
-            function (err) {
-                if (err) reject(err);
-                else resolve({ id: this.lastID, email, nome, cognome, role });
-            }
-            );
-        });
-    }
-
-
-    static verifyPassword(plainPassword, hashedPassword) {
-        return bcrypt.compare(plainPassword, hashedPassword);
-    }
-
-    
-}
-
-module.exports = { db, initDatabase, UserModel };
+module.exports = { db, initDatabase};
