@@ -132,7 +132,7 @@ Il database `SQLite` è organizzato nelle seguenti tabelle principali:
   - `cart_items`: Salva il contenuto del carrello per gli utenti registrati
   - `newsletter`: Lista delle email iscritte alla newsletter
 
-Per una visione completa della struttura, consulta il file [`schema.sql`](https://www.google.com/search?q=./schema.sql).
+Per una visione completa della struttura, consulta il file schema.sql
 
 ## Video Dimostrativo
 
