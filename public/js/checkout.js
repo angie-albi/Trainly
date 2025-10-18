@@ -219,8 +219,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     cvv: cvv.value,
                     expiryMonth: document.getElementById('expiryMonth')?.value,
                     expiryYear: document.getElementById('expiryYear')?.value
-                },
-                notes: document.getElementById('notes').value
+                }
             };
 
             const res = await fetch('/api/checkout', {
