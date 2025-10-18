@@ -105,20 +105,21 @@ Per testare le diverse funzionalità, puoi utilizzare i seguenti account preconf
 ```
 trainly/
 ├── 📁 bin/
-│   └── www               # Script di avvio del server
+│   └── www                # Script di avvio del server
 ├── 📁 middleware/
-│   ├── autorizzazioni.js # Gestione permessi (auth, admin)
-│   └── passport.js       # Configurazione di Passport.js
+│   ├── autorizzazioni.js  # Middleware per permessi (utente, admin)
+│   └── passport.js        # Configurazione per l'autenticazione
 ├── 📁 models/
-│   └── 📁 dao/            # Data Access Objects per il DB
-├── 📁 public/             # File statici (CSS, JS, immagini)
-├── 📁 routes/             # Gestione delle route dell'applicazione
-├── 📁 views/              # File EJS per le viste (frontend)
-│   └── 📁 partials/       # Componenti riutilizzabili (header, footer, ...)
-├── 📄 app.js               # Configurazione principale di Express
-├── 📄 db.js                # Configurazione e inizializzazione del DB
-├── 📄 package.json         # Dipendenze e script del progetto
-└── 📄 schema.sql            # Schema del database SQLite
+│   └── 📁 dao/            # Data Access Objects per le operazioni sul DB
+├── 📁 public/             # File statici (CSS, JS client, immagini)
+├── 📁 routes/             # Gestione delle route per le pagine e le API
+├── 📁 views/              # Viste EJS (template HTML)
+│   └── 📁 partials/       # Componenti riutilizzabili (header footer, ...)
+├── 📄 app.js              # File principale di configurazione Express
+├── 📄 db.js               # Gestione della connessione e inizializzazione del DB
+├── 📄 schema.sql          # Schema del database SQLite
+├── 📄 package.json        # Dipendenze e script del progetto
+└── 📄 .env.example        # Template per le variabili d'ambiente
 ```
 
 ## Schema del Database
