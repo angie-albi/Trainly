@@ -2,7 +2,7 @@
 const app = require('../app');
 const debug = require('debug')('trainly:server');
 const http = require('http');
-const { initDatabase } = require('../models/db');
+const { initDatabase } = require('../db');
 
 // Porta
 const port = normalizePort(process.env.PORT || '3000');

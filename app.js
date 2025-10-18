@@ -2,7 +2,7 @@ const express = require('express');
 const path = require('path');
 const session = require('express-session');
 const passport = require('passport');
-const { initDatabase } = require('./models/db');
+const { initDatabase } = require('./db');
 const flash = require('connect-flash');
 const { isAuthenticated, isAdmin } = require('./middleware/autorizzazioni');
 

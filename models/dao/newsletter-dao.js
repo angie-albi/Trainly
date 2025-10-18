@@ -1,5 +1,5 @@
 'use strict';
-const db = require('../db').db;
+const db = require('../../db').db;
 
 exports.subscribe = (email) => {
     return new Promise((resolve, reject) => {

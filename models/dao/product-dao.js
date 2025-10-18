@@ -1,5 +1,5 @@
 'use strict';
-const db = require('../db').db;
+const db = require('../../db').db;
 
 // Funzioni per gestire i prodotti (Product DAO)
 exports.getAllProducts = () => {

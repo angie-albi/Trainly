@@ -1,4 +1,3 @@
-/* === REPLACE / UPDATE THESE FUNCTIONS IN catalogo.js === */
 
 /* displayProducts: assicurati che lo stato filteredProducts sia sempre coerente */
 function displayProducts(products) {

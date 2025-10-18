@@ -1,5 +1,3 @@
-// admin.js – Gestione prodotti collegata al backend (DB)
-
 let allProducts = [];
 let allOrders = [];
 
@@ -66,7 +64,7 @@ function displayProducts(productsToShow = allProducts) {
     productsToShow.forEach(product => {
         const row = document.createElement('tr');
         row.innerHTML = `
-            <td>
+            <td class="ps-3">
                 <img src="${product.image || '/img/placeholder.png'}" 
                      alt="${product.title || ''}" 
                      style="width: 70px; height: 70px; object-fit: cover; " 
@@ -286,7 +284,7 @@ function displayOrders(orders) {
         });
 
         row.innerHTML = `
-            <td><strong>#${order.id}</strong></td>
+            <td class="ps-3"><strong>#${order.id}</strong></td>
             <td>${order.user_email}</td>
             <td>${orderDate}</td>
             <td><span class="badge bg-${getStatusColor(order.status)}">${getStatusText(order.status)}</span></td>

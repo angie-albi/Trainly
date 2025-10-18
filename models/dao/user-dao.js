@@ -1,5 +1,5 @@
 'use strict';
-const db = require('../db').db;
+const db = require('../../db').db;
 const bcrypt = require('bcrypt');
 
 // Funzioni per gestire gli utenti (User DAO)
