@@ -1,8 +1,11 @@
+'use strict';
+
+require('dotenv').config();
+
 const express = require('express');
 const path = require('path');
 const session = require('express-session');
 const passport = require('passport');
-const { initDatabase } = require('./db');
 const flash = require('connect-flash');
 const { isAuthenticated, isAdmin } = require('./middleware/autorizzazioni');
 
@@ -21,12 +24,25 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
+// Configurazione sessione e Passport
+const isProduction = process.env.NODE_ENV === 'production';
+
+// Se l'app è dietro un proxy (come su Heroku, Render, ecc.)
+if (isProduction) {
+    app.set('trust proxy', 1); 
+}
+
 // Sessioni (prima di Passport)
 app.use(session({
-    secret: 'trainly-secret-key',
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
-    cookie: { secure: false }
+    cookie: { 
+        httpOnly: true,
+        secure: isProduction,
+        sameSite: 'lax', 
+        maxAge: 24 * 60 * 60 * 1000 // 1 giorno
+    }
 }));
 
 // Passport (dopo sessioni)

@@ -4,7 +4,7 @@ const path = require('path');
 const bcrypt = require('bcrypt');
 const fs = require('fs');
 
-const dbPath = path.join(__dirname, 'db.sqlite');
+const dbPath = path.join(__dirname, process.env.DB_NAME || 'Trainly.db');
 const db = new sqlite3.Database(dbPath, (err) => {
     if (err) {
         console.error('Errore nella connessione al database:', err.message);
