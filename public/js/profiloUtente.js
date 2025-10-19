@@ -24,6 +24,8 @@ function toggleEditMode() {
         passwordInput.setAttribute('type', 'text');
         passwordInput.value = ''; // Svuota il campo password per inserirne una nuova
         togglePasswordBtn.removeAttribute('disabled');
+        togglePasswordBtn.style.pointerEvents = 'auto';
+        togglePasswordBtn.style.opacity = '1';
         editBtn.style.display = 'none';
         saveBtn.style.display = 'inline-block';
         cancelBtn.style.display = 'inline-block';
@@ -37,6 +39,8 @@ function toggleEditMode() {
         passwordInput.setAttribute('type', 'password');
         passwordInput.value = '••••••••'; // Ripristina il placeholder
         togglePasswordBtn.setAttribute('disabled', true);
+        togglePasswordBtn.style.pointerEvents = 'none';
+        togglePasswordBtn.style.opacity = '0.5';
         toggleIcon.className = 'bi bi-eye-slash';
         editBtn.style.display = 'inline-block';
         saveBtn.style.display = 'none';
@@ -133,6 +137,12 @@ document.addEventListener('DOMContentLoaded', function() {
     toggleIcon = document.getElementById('toggleIcon');
     passwordStrength = document.getElementById('passwordStrength');
     passwordRequirements = document.getElementById('passwordRequirements');
+
+    // Imposta lo stato iniziale del pulsante dell'occhio come disabilitato
+    if (togglePasswordBtn) {
+        togglePasswordBtn.style.pointerEvents = 'none';
+        togglePasswordBtn.style.opacity = '0.5';
+    }
 
     if (editBtn) editBtn.addEventListener('click', toggleEditMode);
     if (cancelBtn) cancelBtn.addEventListener('click', cancelEdit);
