@@ -312,11 +312,7 @@ function addAdminPanel() {
         adminPanel.innerHTML = `
             <h3 class="card-title mb-4">Pannello Amministratore</h3>
             <p class="mb-3">Strumenti di amministrazione per gestire il sito Trainly.</p>
-            <div class="d-flex flex-wrap gap-2">
-                <a href="/admin" class="btn btn-custom text-white">
-                    <i class="bi bi-gear me-1"></i> Vai al pannello Admin
-                </a>
-            </div>`;
+            <a href="/admin" class="btn btn-custom text-white" style="width: fit-content;"><i class="bi bi-gear me-1"></i> Vai al pannello Admin</a>`;
         main.appendChild(adminPanel);
     }
 }
