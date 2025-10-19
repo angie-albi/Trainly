@@ -23,6 +23,7 @@ function toggleEditMode() {
     currentPasswordRow.style.display = isEditing ? 'flex' : 'none'; // Mostra/nascondi il campo
     
     if (isEditing) {
+        // Salva i dati correnti quando si entra in modalità modifica
         originalData = {
             nome: nomeInput.value,
             cognome: cognomeInput.value,
@@ -35,6 +36,7 @@ function toggleEditMode() {
         passwordRequirements.style.display = 'block';
         updatePasswordRequirements('');
     } else {
+        // Quando si esce dalla modalità modifica, ripristina i valori originali
         nomeInput.value = originalData.nome;
         cognomeInput.value = originalData.cognome;
         passwordInput.value = '••••••••';
@@ -52,7 +54,7 @@ function cancelEdit() {
     if (isEditMode) {
         toggleEditMode();
     }
-    hideToast('passwordErrorToast');
+    hideToast('passwordAttualeErrorToast');
 }
 
 function updatePasswordRequirements(password) {
@@ -78,6 +80,7 @@ function updatePasswordRequirements(password) {
             }
         }
     });
+    return requirements;
 }
 
 // Funzione per validare la password
@@ -181,7 +184,7 @@ async function loadUserProfile() {
             nomeInput.value = user.nome || '';
             cognomeInput.value = user.cognome || '';
             document.getElementById('staticEmail').value = user.email || '';
-            benvenutoUtente.textContent = `Benvenuto, ${user.nome}!`;
+            document.getElementById('benvenutoUtente').textContent = `Benvenuto, ${user.nome}!`;
             
             if (user.role === 'admin') {
                 addAdminPanel();
@@ -218,13 +221,13 @@ async function loadUserOrders() {
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-start">
                         <div>
-                            <h5 class="card-title">Ordine #${order.id}</h5>
+                            <h5 class="card-title">ID ordine #${order.id}</h5>
                             <p class="card-text text-muted"><small>Data: ${new Date(order.created_at).toLocaleDateString('it-IT')}</small></p>
                             <p class="card-text"><strong>Totale: €${parseFloat(order.total).toFixed(2)}</strong></p>
                             <span class="badge bg-${getStatusColor(order.status)} mb-2">${getStatusText(order.status)}</span>
                         </div>
                         <div>
-                            <button class="btn btn-sm btn-custom" onclick="viewOrderDetails(${order.id})">
+                            <button class="btn btn-sm btn-custom text-white" onclick="viewOrderDetails(${order.id})">
                                 <i class="bi bi-eye me-1"></i>Dettagli
                             </button>
                         </div>
@@ -265,7 +268,7 @@ if (document.getElementById('profiloForm')) {
                 return showToast('passwordErrorToast');
             }
             if (!passwordAttuale) {
-                return showErrorMessage('Devi inserire la password attuale per poterla modificare.');
+                return showErrorMessage('Devi inserire la password attuale per poterla modificare');
             }
             payload.password = nuovaPassword;
             payload.currentPassword = passwordAttuale;
@@ -283,10 +286,12 @@ if (document.getElementById('profiloForm')) {
 
             const result = await response.json();
             if (!response.ok) throw new Error(result.message || 'Errore durante l\'aggiornamento');
-            
-            document.getElementById('benvenutoUtente').textContent = `Benvenuto, ${nuovoNome}!`;
-            toggleEditMode();
-            showToast('successToast');
+            originalData.nome = result.user.nome;
+            originalData.cognome = result.user.cognome;
+
+            document.getElementById('benvenutoUtente').textContent = `Benvenuto, ${result.user.nome}!`;
+            toggleEditMode(); 
+            showToast('editSuccessToast');
 
         } catch (error) {
             console.error('Errore aggiornamento profilo:', error);
