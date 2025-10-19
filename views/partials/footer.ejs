@@ -65,7 +65,7 @@
 
         <!-- TOAST -->
         <div class="toast-container position-fixed bottom-0 end-0 p-3">
-            <!-- (toast: iscrizione newsletter effettuata) -->
+            <!-- (toast: index - iscrizione newsletter effettuata) -->
             <div id="newsletterToast" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
                 <div class="d-flex">
                     <div class="toast-body">
@@ -75,7 +75,7 @@
                 </div>
             </div>
 
-            <!-- (toast: Contatti ) -->
+            <!-- (toast: contatti - Messaggio inviato) -->
             <div class="toast-container position-fixed bottom-0 end-0 p-3">
                 <div id="successToast" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
                     <div class="d-flex">
@@ -97,7 +97,7 @@
                 </div>
             </div>
             
-            <!--  (toast:errore email) -->
+            <!--  (toast: registrati - errore email) -->
             <div id="emailErrorToast" class="toast align-items-center text-bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
                 <div class="d-flex">
                     <div class="toast-body">
@@ -106,8 +106,7 @@
                     <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
                 </div>
             </div>
-
-            <!--  (toast:errore password) -->
+            <!--  (toast: registrati - Errore password) -->
             <div id="passwordErrorToast" class="toast align-items-center text-bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
                 <div class="d-flex">
                     <div class="toast-body">
@@ -117,10 +116,10 @@
                 </div>
             </div>
 
-            <!--  (toast:password debole) -->
-            <div id="weakPasswordToast" class="toast text-bg-warning border-0" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="false">
+            <!--  (toast: profiloUtente, registrati - Password debole) -->
+            <div id="weakPasswordToast" class="toast text-bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="false">
                 <div class="toast-header">
-                    <i class="bi bi-shield-exclamation text-warning me-2"></i>
+                    <i class="bi bi-shield-exclamation text-danger me-2"></i>
                     <strong class="me-auto">Password non sicura</strong>
                     <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
                 </div>
@@ -146,7 +145,7 @@
                 </div>
             </div>
 
-            <!-- (toast: Modifica profilo utente ) -->
+            <!-- (toast: profiloUtente -  Modifica) -->
             <div id="editSuccessToast" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
                 <div class="d-flex">
                     <div class="toast-body">
@@ -155,18 +154,26 @@
                     <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
                 </div>
             </div>
-            <!--  (toast: Errore password profilo utente) -->
+            <!-- (toast: profiloUtente - Password attuale non inserita) -->
             <div id="passwordAttualeErrorToast" class="toast align-items-center text-bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
                 <div class="d-flex">
                     <div class="toast-body">
-                        Pasword attuale errata!
+                        Devi inserire la password attuale per poterla modificare
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+            </div>
+            <!--  (toast: profiloUtente -  Errore password attuale) -->
+            <div id="passwordAttualeErrorToast" class="toast align-items-center text-bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="d-flex">
+                    <div class="toast-body">
+                        Password attuale errata!
                     </div>
                     <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
                 </div>
             </div>
 
-
-            <!--  (toast: credenziali errate) -->
+            <!--  (toast: login - credenziali errate) -->
             <div id="loginErrorToast" class="toast align-items-center text-bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
                 <div class="d-flex">
                     <div class="toast-body">

@@ -265,10 +265,10 @@ if (document.getElementById('profiloForm')) {
         
         if (nuovaPassword) {
             if (!validatePassword(nuovaPassword)) {
-                return showToast('passwordErrorToast');
+                return showToast('weakPasswordToast');
             }
             if (!passwordAttuale) {
-                return showErrorMessage('Devi inserire la password attuale per poterla modificare');
+                return showToast('passwordAttualeErrorToast');
             }
             payload.password = nuovaPassword;
             payload.currentPassword = passwordAttuale;
