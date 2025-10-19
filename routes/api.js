@@ -92,21 +92,39 @@ router.get('/user/profile', isAuthenticated, (req, res) => {
 
 router.put('/user/profile', isAuthenticated, async (req, res) => {
     try {
-        const { nome, cognome, password } = req.body;
+        const { nome, cognome, password, currentPassword } = req.body;
         let userData = { nome, cognome };
 
+        // Se l'utente sta cercando di cambiare la password
         if (password && password.trim() !== '') {
+            if (!currentPassword) {
+                return res.status(400).json({ success: false, message: 'La password attuale è richiesta per impostarne una nuova.' });
+            }
+
+            const user = await userDao.findById(req.user.id);
+            if (!user) {
+                return res.status(404).json({ success: false, message: 'Utente non trovato.' });
+            }
+
+            const isMatch = await bcrypt.compare(currentPassword, user.password);
+            if (!isMatch) {
+                return res.status(403).json({ success: false, message: 'La password attuale non è corretta. Riprova.' });
+            }
+            
             const hashedPassword = await bcrypt.hash(password, 10);
             userData.password = hashedPassword;
         }
 
         await userDao.updateUser(req.user.id, userData);
         const updatedUser = await userDao.findById(req.user.id);
-        const { password: _, ...user } = updatedUser; // Rimuove la password per la risposta
-        res.json({ success: true, message: 'Profilo aggiornato con successo', user });
+        const { password: _, ...userResponse } = updatedUser;
+        
+        // Invia la risposta con l'utente aggiornato
+        res.json({ success: true, message: 'Profilo aggiornato con successo', user: userResponse });
+
     } catch (error) {
         console.error('Errore aggiornamento profilo:', error);
-        res.status(500).json({ success: false, message: 'Errore interno del server' });
+        res.status(500).json({ success: false, message: 'Errore interno del server durante l\'aggiornamento del profilo.' });
     }
 });
 

@@ -20,10 +20,9 @@ function toggleEditMode() {
     editBtn.style.display = isEditing ? 'none' : 'inline-block';
     saveBtn.style.display = isEditing ? 'inline-block' : 'none';
     cancelBtn.style.display = isEditing ? 'inline-block' : 'none';
-    currentPasswordRow.style.display = isEditing ? 'flex' : 'none'; // Mostra/nascondi il campo
+    currentPasswordRow.style.display = isEditing ? 'flex' : 'none';
     
     if (isEditing) {
-        // Salva i dati correnti quando si entra in modalità modifica
         originalData = {
             nome: nomeInput.value,
             cognome: cognomeInput.value,
@@ -36,7 +35,6 @@ function toggleEditMode() {
         passwordRequirements.style.display = 'block';
         updatePasswordRequirements('');
     } else {
-        // Quando si esce dalla modalità modifica, ripristina i valori originali
         nomeInput.value = originalData.nome;
         cognomeInput.value = originalData.cognome;
         passwordInput.value = '••••••••';
@@ -50,11 +48,9 @@ function toggleEditMode() {
 }
 
 function cancelEdit() {
-    // Chiama toggleEditMode per tornare allo stato non-modifica e ripristinare i dati
     if (isEditMode) {
         toggleEditMode();
     }
-    hideToast('passwordAttualeErrorToast');
 }
 
 function updatePasswordRequirements(password) {
@@ -69,27 +65,19 @@ function updatePasswordRequirements(password) {
         const element = document.querySelector(`[data-rule="${rule}"]`);
         if (element) {
             const icon = element.querySelector('i');
-            if (requirements[rule]) {
-                icon.className = 'bi bi-check-circle text-success me-1';
-                element.classList.add('valid');
-                element.classList.remove('invalid');
-            } else {
-                icon.className = 'bi bi-x-circle text-danger me-1';
-                element.classList.add('invalid');
-                element.classList.remove('valid');
-            }
+            icon.className = requirements[rule] 
+                ? 'bi bi-check-circle text-success me-1' 
+                : 'bi bi-x-circle text-danger me-1';
         }
     });
     return requirements;
 }
 
-// Funzione per validare la password
 function validatePassword(password) {
     const validation = updatePasswordRequirements(password);
     return Object.values(validation).every(Boolean);
 }
 
-// Funzione per controllare la forza della password
 function checkPasswordStrength(password) {
     let score = 0;
     if (password.length >= 8) score++;
@@ -104,10 +92,15 @@ function checkPasswordStrength(password) {
     return { text: 'Molto Forte', color: 'success' };
 }
 
-// Funzioni per i toast
-function showToast(toastId) {
+function showToast(toastId, message = null) {
     const toastElement = document.getElementById(toastId);
     if (toastElement) {
+        if (message) {
+            const toastBody = toastElement.querySelector('.toast-body');
+            if (toastBody) {
+                toastBody.textContent = message;
+            }
+        }
         const toast = new bootstrap.Toast(toastElement);
         toast.show();
     }
@@ -122,6 +115,7 @@ function hideToast(toastId) {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
+    // Inizializzazione delle variabili DOM
     editBtn = document.getElementById('editBtn');
     saveBtn = document.getElementById('saveBtn');
     cancelBtn = document.getElementById('cancelBtn');
@@ -147,7 +141,6 @@ document.addEventListener('DOMContentLoaded', function() {
     if (togglePasswordBtn && toggleIcon) {
         togglePasswordBtn.addEventListener('click', function() {
             if (!isEditMode) return;
-            
             const isPassword = passwordInput.getAttribute('type') === 'password';
             passwordInput.setAttribute('type', isPassword ? 'text' : 'password');
             toggleIcon.classList.toggle('bi-eye');
@@ -170,7 +163,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     loadUserProfile();
-    loadUserOrders(); 
+    loadUserOrders();
 });
 
 async function loadUserProfile() {
@@ -192,7 +185,7 @@ async function loadUserProfile() {
         }
     } catch (error) {
         console.error('Errore caricamento profilo:', error);
-        showErrorMessage('Errore nel caricamento del profilo utente');
+        showToast('loginErrorToast', 'Errore nel caricamento del profilo utente.');
     }
 }
 
@@ -206,7 +199,6 @@ async function loadUserOrders() {
         }
         
         const result = await response.json();
-        
         if (!result.success || !result.orders || result.orders.length === 0) {
             container.innerHTML = `
                 <div class="text-center text-muted">
@@ -255,20 +247,19 @@ if (document.getElementById('profiloForm')) {
         const passwordAttuale = currentPasswordInput.value.trim();
 
         if (!nuovoNome || !nuovoCognome) {
-            return showErrorMessage('Nome e cognome sono obbligatori!');
+            return showToast('loginErrorToast', 'Nome e cognome sono obbligatori!');
         }
 
-        let payload = {
-            nome: nuovoNome,
-            cognome: nuovoCognome
-        };
-        
+        let payload = { nome: nuovoNome, cognome: nuovoCognome };
         if (nuovaPassword) {
             if (!validatePassword(nuovaPassword)) {
                 return showToast('weakPasswordToast');
             }
             if (!passwordAttuale) {
-                return showToast('passwordAttualeErrorToast');
+                return showToast('passwordMancanteErrorToast');
+            }
+            if( nuovaPassword === passwordAttuale) {
+                return showToast('passwordUagualeAttualeErrorToast');
             }
             payload.password = nuovaPassword;
             payload.currentPassword = passwordAttuale;
@@ -286,16 +277,16 @@ if (document.getElementById('profiloForm')) {
 
             const result = await response.json();
             if (!response.ok) throw new Error(result.message || 'Errore durante l\'aggiornamento');
+            
             originalData.nome = result.user.nome;
             originalData.cognome = result.user.cognome;
-
             document.getElementById('benvenutoUtente').textContent = `Benvenuto, ${result.user.nome}!`;
             toggleEditMode(); 
             showToast('editSuccessToast');
 
         } catch (error) {
             console.error('Errore aggiornamento profilo:', error);
-            showErrorMessage(error.message);
+            showToast('loginErrorToast', error.message);
         } finally {
             saveBtn.innerHTML = '<i class="bi bi-check-lg me-2"></i>Salva Modifiche';
             saveBtn.disabled = false;
@@ -312,8 +303,12 @@ function addAdminPanel() {
         adminPanel.innerHTML = `
             <h3 class="card-title mb-4">Pannello Amministratore</h3>
             <p class="mb-3">Strumenti di amministrazione per gestire il sito Trainly.</p>
-            <a href="/admin" class="btn btn-custom text-white" style="width: fit-content;"><i class="bi bi-gear me-1"></i> Vai al pannello Admin</a>`;
-        main.appendChild(adminPanel);
+            <div class="d-flex flex-wrap gap-2">
+                <a href="/admin" class="btn btn-custom text-white">
+                    <i class="bi bi-gear me-1"></i> Vai al pannello Admin
+                </a>
+            </div>`;
+        main.prepend(adminPanel);
     }
 }
 
@@ -329,24 +324,4 @@ function getStatusText(status) {
 
 function viewOrderDetails(orderId) {
     window.location.href = `/confermaOrdine?orderId=${orderId}`;
-}
-
-function showErrorMessage(message) {
-    const toastContainer = document.querySelector('.toast-container');
-    if (toastContainer) {
-        const errorToast = document.createElement('div');
-        errorToast.className = 'toast align-items-center text-bg-danger border-0';
-        errorToast.setAttribute('role', 'alert');
-        errorToast.innerHTML = `
-            <div class="d-flex">
-                <div class="toast-body"><i class="bi bi-exclamation-triangle me-2"></i>${message}</div>
-                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
-            </div>`;
-        toastContainer.appendChild(errorToast);
-        
-        const toast = new bootstrap.Toast(errorToast);
-        toast.show();
-        
-        errorToast.addEventListener('hidden.bs.toast', () => errorToast.remove());
-    }
 }

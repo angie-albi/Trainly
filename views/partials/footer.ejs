@@ -155,7 +155,7 @@
                 </div>
             </div>
             <!-- (toast: profiloUtente - Password attuale non inserita) -->
-            <div id="passwordAttualeErrorToast" class="toast align-items-center text-bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div id="passwordMancanteErrorToast" class="toast align-items-center text-bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
                 <div class="d-flex">
                     <div class="toast-body">
                         Devi inserire la password attuale per poterla modificare
@@ -168,6 +168,15 @@
                 <div class="d-flex">
                     <div class="toast-body">
                         Password attuale errata!
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+            </div>
+            <!--  (toast: profiloUtente -  Errore nuova password uguale alla attuale) -->
+            <div id="passwordUagualeAttualeErrorToast" class="toast align-items-center text-bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="d-flex">
+                    <div class="toast-body">
+                        La nuova password non può essere uguale a quella attuale!  
                     </div>
                     <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
                 </div>
