@@ -2,7 +2,7 @@ let isEditMode = false;
 let originalData = {};
 
 let editBtn, saveBtn, cancelBtn, form;
-let nomeInput, cognomeInput, passwordInput, togglePasswordBtn, toggleIcon;
+let nomeInput, cognomeInput, passwordInput, currentPasswordInput, currentPasswordRow, togglePasswordBtn, toggleIcon;
 let passwordStrength, passwordRequirements;
 
 function logout() {
@@ -11,50 +11,47 @@ function logout() {
 
 function toggleEditMode() {
     isEditMode = !isEditMode;
-    if (isEditMode) {
-        document.body.classList.add('edit-mode');
+    const isEditing = document.body.classList.toggle('edit-mode', isEditMode);
+
+    nomeInput.disabled = !isEditing;
+    cognomeInput.disabled = !isEditing;
+    passwordInput.disabled = !isEditing;
+
+    editBtn.style.display = isEditing ? 'none' : 'inline-block';
+    saveBtn.style.display = isEditing ? 'inline-block' : 'none';
+    cancelBtn.style.display = isEditing ? 'inline-block' : 'none';
+    currentPasswordRow.style.display = isEditing ? 'flex' : 'none'; // Mostra/nascondi il campo
+    
+    if (isEditing) {
         originalData = {
             nome: nomeInput.value,
             cognome: cognomeInput.value,
-            password: passwordInput.value
         };
-        nomeInput.removeAttribute('disabled');
-        cognomeInput.removeAttribute('disabled');
-        passwordInput.removeAttribute('disabled');
-        passwordInput.setAttribute('type', 'text');
-        passwordInput.value = ''; // Svuota il campo password per inserirne una nuova
-        togglePasswordBtn.removeAttribute('disabled');
+        passwordInput.value = '';
+        passwordInput.placeholder = 'Lascia vuoto per non modificare';
+        currentPasswordInput.value = '';
         togglePasswordBtn.style.pointerEvents = 'auto';
         togglePasswordBtn.style.opacity = '1';
-        editBtn.style.display = 'none';
-        saveBtn.style.display = 'inline-block';
-        cancelBtn.style.display = 'inline-block';
         passwordRequirements.style.display = 'block';
         updatePasswordRequirements('');
     } else {
-        document.body.classList.remove('edit-mode');
-        nomeInput.setAttribute('disabled', true);
-        cognomeInput.setAttribute('disabled', true);
-        passwordInput.setAttribute('disabled', true);
-        passwordInput.setAttribute('type', 'password');
-        passwordInput.value = '••••••••'; // Ripristina il placeholder
-        togglePasswordBtn.setAttribute('disabled', true);
+        nomeInput.value = originalData.nome;
+        cognomeInput.value = originalData.cognome;
+        passwordInput.value = '••••••••';
+        passwordInput.placeholder = '';
         togglePasswordBtn.style.pointerEvents = 'none';
         togglePasswordBtn.style.opacity = '0.5';
         toggleIcon.className = 'bi bi-eye-slash';
-        editBtn.style.display = 'inline-block';
-        saveBtn.style.display = 'none';
-        cancelBtn.style.display = 'none';
         passwordStrength.style.display = 'none';
         passwordRequirements.style.display = 'none';
     }
 }
 
 function cancelEdit() {
-    nomeInput.value = originalData.nome;
-    cognomeInput.value = originalData.cognome;
-    passwordInput.value = originalData.password;
-    toggleEditMode();
+    // Chiama toggleEditMode per tornare allo stato non-modifica e ripristinare i dati
+    if (isEditMode) {
+        toggleEditMode();
+    }
     hideToast('passwordErrorToast');
 }
 
@@ -85,12 +82,8 @@ function updatePasswordRequirements(password) {
 
 // Funzione per validare la password
 function validatePassword(password) {
-    if (password.length < 8) return { isValid: false, message: 'Almeno 8 caratteri' };
-    if (!/[A-Z]/.test(password)) return { isValid: false, message: 'Almeno una maiuscola' };
-    if (!/[a-z]/.test(password)) return { isValid: false, message: 'Almeno una minuscola' };
-    if (!/\d/.test(password)) return { isValid: false, message: 'Almeno un numero' };
-    if (!/[^a-zA-Z0-9]/.test(password)) return { isValid: false, message: 'Almeno un carattere speciale' };
-    return { isValid: true };
+    const validation = updatePasswordRequirements(password);
+    return Object.values(validation).every(Boolean);
 }
 
 // Funzione per controllare la forza della password
@@ -133,12 +126,13 @@ document.addEventListener('DOMContentLoaded', function() {
     nomeInput = document.getElementById('nome');
     cognomeInput = document.getElementById('cognome');
     passwordInput = document.getElementById('password');
+    currentPasswordInput = document.getElementById('currentPassword');
+    currentPasswordRow = document.getElementById('currentPasswordRow');
     togglePasswordBtn = document.getElementById('togglePassword');
     toggleIcon = document.getElementById('toggleIcon');
     passwordStrength = document.getElementById('passwordStrength');
     passwordRequirements = document.getElementById('passwordRequirements');
 
-    // Imposta lo stato iniziale del pulsante dell'occhio come disabilitato
     if (togglePasswordBtn) {
         togglePasswordBtn.style.pointerEvents = 'none';
         togglePasswordBtn.style.opacity = '0.5';
@@ -166,48 +160,31 @@ document.addEventListener('DOMContentLoaded', function() {
                 const strength = checkPasswordStrength(password);
                 passwordStrength.innerHTML = `<small class="text-${strength.color}">Sicurezza password: ${strength.text}</small>`;
                 passwordStrength.style.display = 'block';
-                const validation = validatePassword(password);
-                if (validation.isValid) hideToast('passwordErrorToast');
+            } else {
+                passwordStrength.style.display = 'none';
             }
         });
     }
 
-    // Carica i dati del profilo utente
     loadUserProfile();
-    
-    // Carica gli ordini dell'utente
     loadUserOrders(); 
 });
 
-//Carica profilo utente dall'API
 async function loadUserProfile() {
     try {
         const response = await fetch('/api/user/profile');
-        if (!response.ok) {
-            throw new Error('Errore nel caricamento del profilo');
-        }
+        if (!response.ok) throw new Error('Errore nel caricamento del profilo');
         
         const result = await response.json();
         if (result.success) {
             const user = result.user;
+            nomeInput.value = user.nome || '';
+            cognomeInput.value = user.cognome || '';
+            document.getElementById('staticEmail').value = user.email || '';
+            benvenutoUtente.textContent = `Benvenuto, ${user.nome}!`;
             
-            // Aggiorna i campi del form con i dati dell'utente
-            if (nomeInput) nomeInput.value = user.nome || '';
-            if (cognomeInput) cognomeInput.value = user.cognome || '';
-            if (document.getElementById('staticEmail')) {
-                document.getElementById('staticEmail').value = user.email || '';
-            }
-            
-            // Aggiorna il messaggio di benvenuto
-            const benvenutoElement = document.getElementById('benvenutoUtente');
-            if (benvenutoElement) {
-                // Messaggio di benvenuto unificato per tutti
-                benvenutoElement.textContent = `Benvenuto, ${user.nome}!`;
-                
-                // Controlla il ruolo per aggiungere il pannello admin
-                if (user.role === 'admin') {
-                    addAdminPanel();
-                }
+            if (user.role === 'admin') {
+                addAdminPanel();
             }
         }
     } catch (error) {
@@ -216,159 +193,110 @@ async function loadUserProfile() {
     }
 }
 
-// Carica ordini utente dall'API
 async function loadUserOrders() {
+    const container = document.getElementById('userOrders');
+    if (!container) return;
     try {
         const response = await fetch('/api/user/orders');
-        const container = document.getElementById('userOrders');
-        
-        if (!container) return;
-        
         if (!response.ok) {
-            // Se l'endpoint non esiste ancora, mostra un messaggio placeholder
-            container.innerHTML = `
-                <div class="text-center text-muted">
-                    <p>Non hai ancora effettuato acquisti.</p>
-                    <a href="/catalogo" class="btn btn-primary">Vai al Catalogo</a>
-                </div>
-            `;
-            return;
+            throw new Error('Endpoint non disponibile o errore di rete');
         }
         
         const result = await response.json();
-        container.innerHTML = '';
         
         if (!result.success || !result.orders || result.orders.length === 0) {
             container.innerHTML = `
                 <div class="text-center text-muted">
                     <p>Non hai ancora effettuato acquisti.</p>
-                    <a href="/catalogo" class="btn btn-primary">Vai al Catalogo</a>
-                </div>
-            `;
+                    <a href="/catalogo" class="btn btn-light border">Vai al Catalogo</a>
+                </div>`;
             return;
         }
         
-        // Mostra gli ordini
-        result.orders.forEach(order => {
-            const orderDiv = document.createElement('div');
-            orderDiv.className = 'card mb-3';
-            orderDiv.innerHTML = `
+        container.innerHTML = result.orders.map(order => `
+            <div class="card mb-3">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-start">
                         <div>
                             <h5 class="card-title">Ordine #${order.id}</h5>
-                            <p class="card-text text-muted">
-                                <small>Data: ${new Date(order.created_at).toLocaleDateString('it-IT')}</small>
-                            </p>
-                            <p class="card-text">
-                                <strong>Totale: €${parseFloat(order.total).toFixed(2)}</strong>
-                            </p>
-                            <span class="badge bg-${getStatusColor(order.status)} mb-2">
-                                ${getStatusText(order.status)}
-                            </span>
+                            <p class="card-text text-muted"><small>Data: ${new Date(order.created_at).toLocaleDateString('it-IT')}</small></p>
+                            <p class="card-text"><strong>Totale: €${parseFloat(order.total).toFixed(2)}</strong></p>
+                            <span class="badge bg-${getStatusColor(order.status)} mb-2">${getStatusText(order.status)}</span>
                         </div>
                         <div>
-                            <button class="btn btn-sm btn-outline-primary" onclick="viewOrderDetails(${order.id})">
+                            <button class="btn btn-sm btn-custom" onclick="viewOrderDetails(${order.id})">
                                 <i class="bi bi-eye me-1"></i>Dettagli
                             </button>
                         </div>
                     </div>
                 </div>
-            `;
-            container.appendChild(orderDiv);
-        });
+            </div>`).join('');
         
     } catch (error) {
         console.error('Errore caricamento ordini:', error);
-        const container = document.getElementById('userOrders');
-        if (container) {
-            container.innerHTML = `
-                <div class="text-center text-muted">
-                    <p>Errore nel caricamento degli ordini.</p>
-                    <button class="btn btn-outline-secondary" onclick="loadUserOrders()">Riprova</button>
-                </div>
-            `;
-        }
+        container.innerHTML = `
+            <div class="text-center text-muted">
+                <p>Errore nel caricamento degli ordini.</p>
+                <button class="btn btn-outline-secondary" onclick="loadUserOrders()">Riprova</button>
+            </div>`;
     }
 }
 
-// Aggiorna profilo via API
-const profiloForm = document.getElementById('profiloForm');
-if (profiloForm) {
-    profiloForm.addEventListener('submit', async function(e) {
+if (document.getElementById('profiloForm')) {
+    document.getElementById('profiloForm').addEventListener('submit', async function(e) {
         e.preventDefault();
 
         const nuovoNome = nomeInput.value.trim();
         const nuovoCognome = cognomeInput.value.trim();
         const nuovaPassword = passwordInput.value.trim();
+        const passwordAttuale = currentPasswordInput.value.trim();
 
-        // Validazione frontend
         if (!nuovoNome || !nuovoCognome) {
-            showErrorMessage('Nome e cognome sono obbligatori!');
-            return;
+            return showErrorMessage('Nome e cognome sono obbligatori!');
         }
 
-        // Validazione password solo se è stata inserita
-        let passwordToSend = null;
-        if (nuovaPassword && nuovaPassword !== '••••••••') {
-            const passwordValidation = validatePassword(nuovaPassword);
-            if (!passwordValidation.isValid) {
-                showToast('passwordErrorToast');
-                return;
+        let payload = {
+            nome: nuovoNome,
+            cognome: nuovoCognome
+        };
+        
+        if (nuovaPassword) {
+            if (!validatePassword(nuovaPassword)) {
+                return showToast('passwordErrorToast');
             }
-            passwordToSend = nuovaPassword;
+            if (!passwordAttuale) {
+                return showErrorMessage('Devi inserire la password attuale per poterla modificare.');
+            }
+            payload.password = nuovaPassword;
+            payload.currentPassword = passwordAttuale;
         }
 
-        // Mostra loading
-        const originalSaveText = saveBtn.innerHTML;
         saveBtn.innerHTML = '<i class="spinner-border spinner-border-sm me-2"></i>Salvando...';
         saveBtn.disabled = true;
 
         try {
             const response = await fetch('/api/user/profile', {
                 method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    nome: nuovoNome,
-                    cognome: nuovoCognome,
-                    ...(passwordToSend && { password: passwordToSend })
-                })
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
             });
 
             const result = await response.json();
+            if (!response.ok) throw new Error(result.message || 'Errore durante l\'aggiornamento');
+            
+            document.getElementById('benvenutoUtente').textContent = `Benvenuto, ${nuovoNome}!`;
+            toggleEditMode();
+            showToast('successToast');
 
-            if (!response.ok) {
-                throw new Error(result.message || 'Errore durante l\'aggiornamento');
-            }
-
-            if (result.success) {
-                // Aggiorna il messaggio di benvenuto
-                const benvenutoElement = document.getElementById('benvenutoUtente');
-                if (benvenutoElement) {
-                    benvenutoElement.textContent = `Benvenuto, ${nuovoNome}!`;
-                }
-                
-                // Esci dalla modalità edit
-                toggleEditMode();
-                
-                // Mostra messaggio di successo
-                showToast('successToast');
-            } else {
-                throw new Error(result.message || 'Errore sconosciuto');
-            }
         } catch (error) {
             console.error('Errore aggiornamento profilo:', error);
             showErrorMessage(error.message);
         } finally {
-            // Ripristina il bottone
-            saveBtn.innerHTML = originalSaveText;
+            saveBtn.innerHTML = '<i class="bi bi-check-lg me-2"></i>Salva Modifiche';
             saveBtn.disabled = false;
         }
     });
 }
-
 
 function addAdminPanel() {
     const main = document.querySelector('main');
@@ -377,42 +305,25 @@ function addAdminPanel() {
         adminPanel.id = 'adminPanel';
         adminPanel.className = 'card p-4 mt-4 shadow-sm';
         adminPanel.innerHTML = `
-            <h3 class="card-title mb-4">
-                Pannello Amministratore
-            </h3>
+            <h3 class="card-title mb-4">Pannello Amministratore</h3>
             <p class="mb-3">Strumenti di amministrazione per gestire il sito Trainly.</p>
             <div class="d-flex flex-wrap gap-2">
                 <a href="/admin" class="btn btn-custom text-white">
                     <i class="bi bi-gear me-1"></i> Vai al pannello Admin
                 </a>
-            </div>
-        `;
+            </div>`;
         main.appendChild(adminPanel);
     }
 }
 
 function getStatusColor(status) {
-    switch(status) {
-        case 'completed':
-        case 'confermato': 
-            return 'success';
-        case 'pending': return 'warning';
-        case 'cancelled': return 'danger';
-        case 'processing': return 'info';
-        default: return 'secondary';
-    }
+    const colors = { 'confermato': 'success', 'pending': 'warning', 'cancelled': 'danger' };
+    return colors[status] || 'secondary';
 }
 
 function getStatusText(status) {
-    switch(status) {
-        case 'completed':
-        case 'confermato':
-            return 'Confermato';
-        case 'pending': return 'In attesa';
-        case 'cancelled': return 'Annullato';
-        case 'processing': return 'In elaborazione';
-        default: return 'Sconosciuto';
-    }
+    const texts = { 'confermato': 'Confermato', 'pending': 'In attesa', 'cancelled': 'Annullato' };
+    return texts[status] || 'Sconosciuto';
 }
 
 function viewOrderDetails(orderId) {
@@ -420,7 +331,6 @@ function viewOrderDetails(orderId) {
 }
 
 function showErrorMessage(message) {
-    // Crea un toast di errore dinamico
     const toastContainer = document.querySelector('.toast-container');
     if (toastContainer) {
         const errorToast = document.createElement('div');
@@ -428,35 +338,14 @@ function showErrorMessage(message) {
         errorToast.setAttribute('role', 'alert');
         errorToast.innerHTML = `
             <div class="d-flex">
-                <div class="toast-body">
-                    <i class="bi bi-exclamation-triangle me-2"></i>${message}
-                </div>
+                <div class="toast-body"><i class="bi bi-exclamation-triangle me-2"></i>${message}</div>
                 <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
-            </div>
-        `;
+            </div>`;
         toastContainer.appendChild(errorToast);
         
         const toast = new bootstrap.Toast(errorToast);
         toast.show();
         
-        // Rimuovi l'elemento dopo che si nasconde
-        errorToast.addEventListener('hidden.bs.toast', () => {
-            errorToast.remove();
-        });
-    }
-}
-
-async function loadAdminStats() {
-    try {
-        const response = await fetch('/api/admin/stats');
-        if (response.ok) {
-            const stats = await response.json();
-            alert(`Statistiche Admin:\nUtenti totali: ${stats.totalUsers}\nOrdini totali: ${stats.totalOrders}`);
-        } else {
-            throw new Error('Impossibile caricare le statistiche');
-        }
-    } catch (error) {
-        console.error('Errore caricamento statistiche:', error);
-        showErrorMessage('Errore nel caricamento delle statistiche');
+        errorToast.addEventListener('hidden.bs.toast', () => errorToast.remove());
     }
 }
