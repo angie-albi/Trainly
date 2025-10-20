@@ -141,9 +141,14 @@
                         </svg>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end">
-                        <li class="menu-login"><a class="dropdown-item" href="/accedi">Accedi</a></li>
-                        <li class="menu-register"><a class="dropdown-item" href="/registrati">Registrati</a></li>
-                        </ul>
+                        <% if (locals.user) { %>
+                            <li><a class="dropdown-item" href="/profiloUtente">Il mio profilo</a></li>
+                            <li><a class="dropdown-item" href="/logout">Logout</a></li>
+                        <% } else { %>
+                            <li class="menu-login"><a class="dropdown-item" href="/accedi">Accedi</a></li>
+                            <li class="menu-register"><a class="dropdown-item" href="/registrati">Registrati</a></li>
+                        <% } %>
+                    </ul>
                 </div>
                 <!-- carrello -->
                 <button class="btn btn-carrello" type="button" data-bs-toggle="offcanvas" data-bs-target="#cartOffcanvas" aria-controls="cartOffcanvas">

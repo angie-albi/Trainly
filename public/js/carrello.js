@@ -6,6 +6,16 @@ let userId = null;
 // Funzione per verificare se l'utente è autenticato
 async function checkAuthStatus() {
     try {
+        // Prima verifichiamo se c'è un indicatore di autenticazione nell'interfaccia
+        const loginLink = document.querySelector('.menu-login');
+        if (loginLink) {
+            // Se c'è il link per il login, l'utente non è autenticato
+            isUserAuthenticated = false;
+            userId = null;
+            return false;
+        }
+
+        // Se non c'è il link per il login, verifichiamo con il server
         const response = await fetch('/api/user/profile', {
             credentials: 'include'
         });
@@ -16,11 +26,15 @@ async function checkAuthStatus() {
             userId = data.user.id;
             return true;
         }
+
+        // Se la risposta non è ok, l'utente non è autenticato
         isUserAuthenticated = false;
+        userId = null;
         return false;
     } catch (error) {
-        console.error('Errore verifica autenticazione:', error);
+        // In caso di errori di rete, assumiamo che l'utente non sia autenticato
         isUserAuthenticated = false;
+        userId = null;
         return false;
     }
 }

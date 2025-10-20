@@ -13,7 +13,6 @@ function debounce(fn, wait = 300) {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('Inizializzazione catalogo...');
     initializeCatalog();
 
         document.addEventListener('click', function(e) {
