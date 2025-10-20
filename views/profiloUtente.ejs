@@ -1,7 +1,7 @@
 <%- include('partials/header', { title: 'Profilo utente'}) %>            
     <%- include('partials/navbar', { currentPage: 'profiloUtente' }) %>
 
-    <main class="container my-5 px-5 pb-5">
+    <main class="container my-5 px-5">
         <h2 class="mb-4" id="benvenutoUtente">
             <% if (user) { %>
                 Benvenuto, <%= user.nome %>!
@@ -102,10 +102,7 @@
         <div class="card p-4 shadow-sm">
             <h3 class="card-title mb-4">I tuoi acquisti recenti</h3>
             <div id="userOrders">
-                <div class="text-center text-muted">
-                    <p>Non hai ancora effettuato acquisti.</p>
-                    <a href="/catalogo" class="btn btn-primary">Vai al Catalogo</a>
-                </div>
+                <!-- JS -->>
             </div>
         </div>
     </main>

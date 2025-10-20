@@ -11,7 +11,8 @@ exports.createPayment = (paymentData) => {
         // Crea un ID di transazione fittizio
         const transactionId = 'FAKE-' + Date.now();
 
-        db.run(sql, [orderId, userId, total, method, transactionId], function(err) {
+        const formattedTotal = parseFloat(total).toFixed(2);
+        db.run(sql, [orderId, userId, formattedTotal, method, transactionId], function(err) {
             if (err) reject(err);
             else resolve(this.lastID);
         });

@@ -132,8 +132,8 @@ router.put('/user/profile', isAuthenticated, async (req, res) => {
 router.get('/cart', isAuthenticated, async (req, res) => {
     try {
         const items = await cartDao.getCartItems(req.user.id);
-        const total = items.reduce((sum, item) => sum + item.subtotal, 0);
-        res.json({ success: true, items, total: total.toFixed(2) });
+        const total = parseFloat(items.reduce((sum, item) => sum + item.subtotal, 0).toFixed(2));
+        res.json({ success: true, items, total });
     } catch (error) {
         console.error('Errore recupero carrello:', error);
         res.status(500).json({ success: false, message: 'Errore nel recupero del carrello' });
@@ -216,9 +216,9 @@ router.post('/checkout', isAuthenticated, async (req, res) => {
         }
 
         // 2. Calcola il totale
-        const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-        const taxes = subtotal * 0.22;
-        const total = subtotal + taxes;
+        const subtotal = parseFloat(cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0).toFixed(2));
+        const taxes = parseFloat((subtotal * 0.22).toFixed(2));
+        const total = parseFloat((subtotal + taxes).toFixed(2));
 
         // 3. Crea l'ordine
         const orderId = await orderDao.createOrder(userId, total);

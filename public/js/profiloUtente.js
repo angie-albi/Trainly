@@ -203,7 +203,7 @@ async function loadUserOrders() {
             container.innerHTML = `
                 <div class="text-center text-muted">
                     <p>Non hai ancora effettuato acquisti.</p>
-                    <a href="/catalogo" class="btn btn-light border">Vai al Catalogo</a>
+                    <a href="/catalogo" class="btn btn-custom text-white border">Vai al Catalogo</a>
                 </div>`;
             return;
         }
@@ -308,7 +308,7 @@ function addAdminPanel() {
                     <i class="bi bi-gear me-1"></i> Vai al pannello Admin
                 </a>
             </div>`;
-        main.prepend(adminPanel);
+        main.appendChild(adminPanel);
     }
 }
 

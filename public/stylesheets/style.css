@@ -546,7 +546,7 @@ footer small a:hover {
     border-left-color: rgb(17, 57, 133);
 }
 
-.timeline-item.active .timeline-icon {
+.timeline-item.active .timeline-icon, .bg-custom {
     background-color: rgb(17, 57, 133);
     color: white;
 }
@@ -571,6 +571,21 @@ footer small a:hover {
     background: rgb(17, 57, 133);
     color: white;
 }
+
+.admin-header .btn-outline-light {
+    align-items: center;
+}
+
+.admin-header .btn-outline-light:hover {
+    background-color: white;
+    color: rgb(17, 57, 133);
+    border-color: white;
+}
+
+.admin-header .btn-outline-light:hover svg {
+    fill: rgb(17, 57, 133);
+}
+
 
 .product-card {
     transition: all 0.3s ease;
