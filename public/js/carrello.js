@@ -6,16 +6,6 @@ let userId = null;
 // Funzione per verificare se l'utente è autenticato
 async function checkAuthStatus() {
     try {
-        // Prima verifichiamo se c'è un indicatore di autenticazione nell'interfaccia
-        const loginLink = document.querySelector('.menu-login');
-        if (loginLink) {
-            // Se c'è il link per il login, l'utente non è autenticato
-            isUserAuthenticated = false;
-            userId = null;
-            return false;
-        }
-
-        // Se non c'è il link per il login, verifichiamo con il server
         const response = await fetch('/api/user/profile', {
             credentials: 'include'
         });
@@ -27,12 +17,10 @@ async function checkAuthStatus() {
             return true;
         }
 
-        // Se la risposta non è ok, l'utente non è autenticato
         isUserAuthenticated = false;
         userId = null;
         return false;
     } catch (error) {
-        // In caso di errori di rete, assumiamo che l'utente non sia autenticato
         isUserAuthenticated = false;
         userId = null;
         return false;
@@ -42,10 +30,11 @@ async function checkAuthStatus() {
 // Carica il carrello dal DB se l'utente è loggato, altrimenti dal localStorage
 async function caricaCarrello() {
     try {
-        const isAuthenticated = await checkAuthStatus();
+        await checkAuthStatus();
         
-        if (isAuthenticated) {
-            // Se l'utente è autenticato, carica dal database
+        if (isUserAuthenticated) {
+            // Se l'utente è autenticato, sincronizza il carrello locale (se esiste) e poi carica dal DB
+            await sincronizzaCarrelloAlLogin();
             const response = await fetch('/api/cart', { credentials: 'include' });
             if (response.ok) {
                 const data = await response.json();
@@ -58,17 +47,13 @@ async function caricaCarrello() {
                         image: item.image_url || '',
                         quantity: item.quantity
                     }));
-                    salvaCarrello(); 
-                    aggiornaInterfacciaCarrello();
-                    return;
                 }
             }
+        } else {
+            // Fallback al localStorage se non autenticato
+            const carrelloSalvato = localStorage.getItem('trainlyCart');
+            carrello = carrelloSalvato ? JSON.parse(carrelloSalvato) : [];
         }
-        
-        // Fallback al localStorage se non autenticato o in caso di errore
-        const carrelloSalvato = localStorage.getItem('trainlyCart');
-        carrello = carrelloSalvato ? JSON.parse(carrelloSalvato) : [];
-        
     } catch (error) {
         console.error('Errore nel caricare il carrello:', error);
         carrello = [];
@@ -87,8 +72,6 @@ async function aggiungiAlCarrello(prodotto) {
         carrello.push(prodotto);
     }
     
-    salvaCarrello(); 
-    
     if (isUserAuthenticated) {
         try {
             await fetch('/api/cart', {
@@ -103,6 +86,8 @@ async function aggiungiAlCarrello(prodotto) {
         } catch (error) {
             console.error('Errore sincronizzazione aggiunta carrello:', error);
         }
+    } else {
+        salvaCarrelloInLocale(); 
     }
     
     aggiornaInterfacciaCarrello();
@@ -113,28 +98,19 @@ async function aggiungiAlCarrello(prodotto) {
 async function rimuoviDalCarrello(idProdotto) {
     const indice = carrello.findIndex(prodotto => prodotto.id == idProdotto);
     if (indice !== -1) {
-        const prodottoRimosso = carrello[indice];
         carrello.splice(indice, 1);
-        salvaCarrello();
         
         if (isUserAuthenticated) {
             try {
-                const response = await fetch('/api/cart', { credentials: 'include' });
-                if (response.ok) {
-                    const data = await response.json();
-                    if (data.success) {
-                        const cartItem = data.items.find(item => item.product_id == idProdotto);
-                        if (cartItem) {
-                            await fetch(`/api/cart/${cartItem.id}`, {
-                                method: 'DELETE',
-                                credentials: 'include'
-                            });
-                        }
-                    }
-                }
+                await fetch(`/api/cart/product/${idProdotto}`, {
+                    method: 'DELETE',
+                    credentials: 'include'
+                });
             } catch (error) {
                 console.error('Errore sincronizzazione rimozione:', error);
             }
+        } else {
+            salvaCarrelloInLocale();
         }
         
         aggiornaInterfacciaCarrello();
@@ -143,37 +119,29 @@ async function rimuoviDalCarrello(idProdotto) {
 
 // Modifica la quantità di un prodotto 
 async function modificaQuantita(idProdotto, nuovaQuantita) {
-    const prodotto = carrello.find(item => item.id == idProdotto);
-    if (!prodotto) return;
-
     if (nuovaQuantita <= 0) {
         rimuoviDalCarrello(idProdotto);
         return;
     }
+    
+    const prodotto = carrello.find(item => item.id == idProdotto);
+    if (!prodotto) return;
 
     prodotto.quantity = nuovaQuantita;
-    salvaCarrello();
 
     if (isUserAuthenticated) {
         try {
-            const response = await fetch('/api/cart', { credentials: 'include' });
-            if (response.ok) {
-                const data = await response.json();
-                if (data.success) {
-                    const cartItem = data.items.find(item => item.product_id == idProdotto);
-                    if (cartItem) {
-                        await fetch(`/api/cart/${cartItem.id}`, {
-                            method: 'PUT',
-                            headers: { 'Content-Type': 'application/json' },
-                            credentials: 'include',
-                            body: JSON.stringify({ quantity: nuovaQuantita })
-                        });
-                    }
-                }
-            }
+            await fetch(`/api/cart/product/${idProdotto}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify({ quantity: nuovaQuantita })
+            });
         } catch (error) {
             console.error('Errore sincronizzazione quantità:', error);
         }
+    } else {
+        salvaCarrelloInLocale();
     }
     
     aggiornaInterfacciaCarrello();
@@ -181,10 +149,8 @@ async function modificaQuantita(idProdotto, nuovaQuantita) {
 
 // Sincronizza il carrello del localStorage con il DB dopo il login
 async function sincronizzaCarrelloAlLogin() {
-    const isAuthenticated = await checkAuthStatus();
     const carrelloLocale = JSON.parse(localStorage.getItem('trainlyCart') || '[]');
-
-    if (isAuthenticated && carrelloLocale.length > 0) {
+    if (isUserAuthenticated && carrelloLocale.length > 0) {
         try {
             for (const prodotto of carrelloLocale) {
                 await fetch('/api/cart', {
@@ -197,17 +163,17 @@ async function sincronizzaCarrelloAlLogin() {
                     })
                 });
             }
-            await caricaCarrello();
+            // Pulisce il localStorage solo dopo la sincronizzazione
+            localStorage.removeItem('trainlyCart');
         } catch (error) {
             console.error('Errore sincronizzazione carrello al login:', error);
         }
     }
 }
 
-
-
-// Salva il carrello nel localStorage
-function salvaCarrello() {
+// Salva il carrello nel localStorage (SOLO per utenti non loggati)
+function salvaCarrelloInLocale() {
+    if (isUserAuthenticated) return; // Non salvare in locale se l'utente è loggato
     try {
         localStorage.setItem('trainlyCart', JSON.stringify(carrello));
     } catch (error) {
@@ -241,24 +207,11 @@ function aggiornaInterfacciaCarrello() {
     } else {
         carrelloOffcanvas.className = 'offcanvas-body px-4 d-flex flex-column';
 
-        let bottoneAzioneHtml = '';
-        if (isUserAuthenticated) {
-            // Se l'utente è loggato, mostra il bottone per il checkout
-            bottoneAzioneHtml = `
-                <button class="btn btn-checkout w-100 mb-2 text-white" onclick="procediCheckout()">
-                    Procedi al checkout
-                </button>
-            `;
-        } else {
-            // Se l'utente NON è loggato, mostra il bottone per accedere
-            bottoneAzioneHtml = `
-                <a href="/accedi?redirect=/checkout" class="btn btn-checkout w-100 mb-2 text-white">
-                    Accedi per continuare
-                </a>
-            `;
-        }
+        let bottoneAzioneHtml = isUserAuthenticated
+            ? `<button class="btn btn-checkout w-100 mb-2 text-white" onclick="procediCheckout()">Procedi al checkout</button>`
+            : `<a href="/accedi?redirect=/checkout" class="btn btn-checkout w-100 mb-2 text-white">Accedi per continuare</a>`;
 
-        let htmlCarrello = `
+        carrelloOffcanvas.innerHTML = `
             <div class="carrello-lista">
                 ${carrello.map(prodotto => `
                     <div class="carrello-item border-bottom p-3 bg-white rounded mb-2" data-id="${prodotto.id}">
@@ -284,38 +237,33 @@ function aggiornaInterfacciaCarrello() {
                     </div>
                 `).join('')}
             </div>
-
-            <div class="carrello-footer mt-auto bg-white rounded p-3 shadow-sm" style="flex-shrink: 0;">
+            <div class="carrello-footer mt-2 bg-white rounded p-3 shadow-sm" style="flex-shrink: 0;">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <strong class="text-dark fs-7">Totale: ${calcolaTotale().toFixed(2)}€</strong>
                     <small class="text-muted">${numeroArticoli} articol${numeroArticoli === 1 ? 'o' : 'i'}</small>
                 </div> 
-                
                 ${bottoneAzioneHtml}
-                
                 <button class="btn btn-light w-100" onclick="svuotaCarrello()">Svuota carrello</button>
             </div>
         `;
-        carrelloOffcanvas.innerHTML = htmlCarrello;
     }
     aggiornaBadgeCarrello();
 
-    // Aggiungi il modal di conferma se non esiste già
     if (!document.getElementById('svuotaCarrelloModal')) {
         const modalHtml = `
             <div class="modal fade" id="svuotaCarrelloModal" tabindex="-1" aria-labelledby="svuotaCarrelloModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title text-white" id="svuotaCarrelloModalLabel">Conferma svuotamento</h5>
-                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <h5 class="modal-title" id="svuotaCarrelloModalLabel">Conferma svuotamento</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
-                        <div class="modal-body text-black">
+                        <div class="modal-body">
                             Sei sicuro di voler svuotare il carrello?
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Annulla</button>
-                            <button type="button" class="btn btn-svuota-carrello text-white" onclick="confermaSvuotaCarrello()">Svuota carrello</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
+                            <button type="button" class="btn btn-danger" onclick="confermaSvuotaCarrello()">Svuota</button>
                         </div>
                     </div>
                 </div>
@@ -331,16 +279,21 @@ function svuotaCarrello() {
 }
 
 // Funzione di conferma per svuotare il carrello
-function confermaSvuotaCarrello() {
+async function confermaSvuotaCarrello() {
     carrello = [];
-    salvaCarrello();
     if (isUserAuthenticated) {
-        fetch('/api/cart/all', { method: 'DELETE', credentials: 'include' });
+        try {
+            await fetch('/api/cart/all', { method: 'DELETE', credentials: 'include' });
+        } catch (error) {
+            console.error('Errore svuotamento carrello DB:', error);
+        }
+    } else {
+        salvaCarrelloInLocale();
     }
-    // Chiudi il modal
+    
     const modal = bootstrap.Modal.getInstance(document.getElementById('svuotaCarrelloModal'));
     modal.hide();
-    // Aggiorna l'interfaccia
+    
     aggiornaInterfacciaCarrello();
 }
 
@@ -353,9 +306,7 @@ function aggiornaBadgeCarrello() {
             if (!badge) {
                 badge = document.createElement('span');
                 badge.className = 'badge bg-danger position-absolute top-0 start-100 translate-middle rounded-pill';
-                
                 bottone.style.position = 'relative'; 
-                
                 bottone.appendChild(badge);
             }
             badge.textContent = numeroArticoli > 99 ? '99+' : numeroArticoli;
@@ -397,13 +348,12 @@ function mostraToastAggiunto(nomeProdotto) {
     nuovoToast.addEventListener('hidden.bs.toast', () => nuovoToast.remove());
 }
 
-
-// Funioni globali per accesso da HTML
+// Rinomina la funzione per evitare conflitti e assicurati che sia accessibile
+window.confermaSvuotaCarrello = confermaSvuotaCarrello;
 window.aggiungiAlCarrello = aggiungiAlCarrello;
 window.rimuoviDalCarrello = rimuoviDalCarrello;
 window.modificaQuantita = modificaQuantita;
 window.svuotaCarrello = svuotaCarrello;
-window.confermaVuotaCarrello = confermaVuotaCarrello;
 window.procediCheckout = procediCheckout;
 
 // Carica carrello al caricamento della pagina
