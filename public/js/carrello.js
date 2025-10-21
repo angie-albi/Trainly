@@ -205,14 +205,14 @@ function aggiornaInterfacciaCarrello() {
             <a class="btn btn-light" href="/catalogo" role="button">Continua lo shopping</a>
         `;
     } else {
-        carrelloOffcanvas.className = 'offcanvas-body px-4 d-flex flex-column';
+        carrelloOffcanvas.className = 'offcanvas-body px-4 d-flex flex-column position-relative h-100';
 
         let bottoneAzioneHtml = isUserAuthenticated
             ? `<button class="btn btn-checkout w-100 mb-2 text-white" onclick="procediCheckout()">Procedi al checkout</button>`
             : `<a href="/accedi?redirect=/checkout" class="btn btn-checkout w-100 mb-2 text-white">Accedi per continuare</a>`;
 
         carrelloOffcanvas.innerHTML = `
-            <div class="carrello-lista">
+            <div class="carrello-lista overflow-auto mb-auto">
                 ${carrello.map(prodotto => `
                     <div class="carrello-item border-bottom p-3 bg-white rounded mb-2" data-id="${prodotto.id}">
                         <div class="row align-items-center text-black">
@@ -237,7 +237,7 @@ function aggiornaInterfacciaCarrello() {
                     </div>
                 `).join('')}
             </div>
-            <div class="carrello-footer mt-2 bg-white rounded p-3 shadow-sm" style="flex-shrink: 0;">
+            <div class="carrello-footer mt-2 bg-white rounded p-3 shadow-sm position-sticky bottom-0 w-100" style="flex-shrink: 0;">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <strong class="text-dark fs-7">Totale: ${calcolaTotale().toFixed(2)}€</strong>
                     <small class="text-muted">${numeroArticoli} articol${numeroArticoli === 1 ? 'o' : 'i'}</small>

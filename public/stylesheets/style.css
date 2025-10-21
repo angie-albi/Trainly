@@ -13,14 +13,13 @@ body {
     min-height: 100%;
     margin: 0;
     overflow-x: hidden;
-    background-color: #fff; /* Imposta lo sfondo bianco come predefinito */
+    background-color: #fff;
 }
 
 main {
-    flex-grow: 1; /* Permette al main di occupare tutto lo spazio disponibile, spingendo il footer in basso */
+    flex-grow: 1;
 }
 
-/* Applica l'altezza solo alle pagine di accesso e registrazione per la centratura verticale */
 main:has(.login-container),
 main:has(.registration-container) {
     height: 85vh;
@@ -31,13 +30,34 @@ main.container:has(#adminPanel) {
     flex-direction: column;
 }
 
-/* Sfondo grigio per pagine specifiche (Checkout, Conferma Ordine, Admin) */
-body:has(.checkout-card),
-body:has(.order-card),
-body:has(.admin-header) {
-    background-color: #f8f9fa;
+/* Stile scrollbar personalizzata */
+::-webkit-scrollbar {
+    width: 12px;
+    background-color: transparent;
 }
 
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgb(17, 57, 133);
+    border-radius: 10px;
+    
+    border: 2px solid white; 
+}
+
+#cartOffcanvas .carrello-lista::-webkit-scrollbar-thumb:hover {
+    transform: scale(1.03);
+    transition: transform 0.3s ease;
+}
+
+/* carrello */
+
+#cartOffcanvas .carrello-lista::-webkit-scrollbar-thumb {
+    background: white;  
+    border-color: rgb(17, 57, 133);
+}
 
 /* ==========================================================================
    STILI DALLA NAVBAR (navbar.css)
