@@ -245,7 +245,7 @@ function aggiornaInterfacciaCarrello() {
         if (isUserAuthenticated) {
             // Se l'utente è loggato, mostra il bottone per il checkout
             bottoneAzioneHtml = `
-                <button class="btn bg-checkout w-100 mb-2 text-white" onclick="procediCheckout()">
+                <button class="btn btn-checkout w-100 mb-2 text-white" onclick="procediCheckout()">
                     Procedi al checkout
                 </button>
             `;
@@ -293,12 +293,55 @@ function aggiornaInterfacciaCarrello() {
                 
                 ${bottoneAzioneHtml}
                 
-                <button class="btn btn-outline-secondary w-100" onclick="svuotaCarrello()">Svuota carrello</button>
+                <button class="btn btn-light w-100" onclick="svuotaCarrello()">Svuota carrello</button>
             </div>
         `;
         carrelloOffcanvas.innerHTML = htmlCarrello;
     }
     aggiornaBadgeCarrello();
+
+    // Aggiungi il modal di conferma se non esiste già
+    if (!document.getElementById('svuotaCarrelloModal')) {
+        const modalHtml = `
+            <div class="modal fade" id="svuotaCarrelloModal" tabindex="-1" aria-labelledby="svuotaCarrelloModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title text-white" id="svuotaCarrelloModalLabel">Conferma svuotamento</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body text-black">
+                            Sei sicuro di voler svuotare il carrello?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Annulla</button>
+                            <button type="button" class="btn btn-svuota-carrello text-white" onclick="confermaSvuotaCarrello()">Svuota carrello</button>
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+        document.body.insertAdjacentHTML('beforeend', modalHtml);
+    }
+}
+
+// Mostra il modal di conferma per svuotare il carrello
+function svuotaCarrello() {
+    const modal = new bootstrap.Modal(document.getElementById('svuotaCarrelloModal'));
+    modal.show();
+}
+
+// Funzione di conferma per svuotare il carrello
+function confermaSvuotaCarrello() {
+    carrello = [];
+    salvaCarrello();
+    if (isUserAuthenticated) {
+        fetch('/api/cart/all', { method: 'DELETE', credentials: 'include' });
+    }
+    // Chiudi il modal
+    const modal = bootstrap.Modal.getInstance(document.getElementById('svuotaCarrelloModal'));
+    modal.hide();
+    // Aggiorna l'interfaccia
+    aggiornaInterfacciaCarrello();
 }
 
 // Aggiorna il badge del carrello sulla navbar
@@ -320,18 +363,6 @@ function aggiornaBadgeCarrello() {
             badge.remove();
         }
     });
-}
-
-// Svuota completamente il carrello
-function svuotaCarrello() {
-    if (confirm('Sei sicuro di voler svuotare il carrello?')) {
-        carrello = [];
-        salvaCarrello();
-        if (isUserAuthenticated) {
-            fetch('/api/cart/all', { method: 'DELETE', credentials: 'include' });
-        }
-        aggiornaInterfacciaCarrello();
-    }
 }
 
 // Reindirizza alla pagina di checkout
@@ -372,6 +403,7 @@ window.aggiungiAlCarrello = aggiungiAlCarrello;
 window.rimuoviDalCarrello = rimuoviDalCarrello;
 window.modificaQuantita = modificaQuantita;
 window.svuotaCarrello = svuotaCarrello;
+window.confermaVuotaCarrello = confermaVuotaCarrello;
 window.procediCheckout = procediCheckout;
 
 // Carica carrello al caricamento della pagina

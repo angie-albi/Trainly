@@ -390,11 +390,6 @@ footer small a:hover {
     background: linear-gradient(90deg, royalblue, rgb(17, 57, 133));
 }
 
-.product-item .btn {
-    background: white;
-    color: black;
-}
-
 .product-item img {
     width: 100%;
     aspect-ratio: 1 / 1;
@@ -402,8 +397,7 @@ footer small a:hover {
     object-position: top;
 }
 
-.card-footer .btn-carrello-aggiungi,
-.carrello-footer .btn-checkout {
+.card-footer .btn-carrello-aggiungi, .modal-footer .btn-svuota-carrello {
     background: rgb(24, 72, 162);
 }
 

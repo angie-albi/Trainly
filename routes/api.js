@@ -143,6 +143,9 @@ router.get('/cart', isAuthenticated, async (req, res) => {
 router.post('/cart', isAuthenticated, async (req, res) => {
     try {
         const { product_id, quantity = 1 } = req.body;
+        if (!product_id || quantity < 1) {
+            return res.status(400).json({ success: false, message: 'Dati prodotto non validi.' });
+        }
         await cartDao.addToCart(req.user.id, product_id, quantity);
         res.json({ success: true, message: 'Prodotto aggiunto al carrello' });
     } catch (error) {
@@ -151,30 +154,47 @@ router.post('/cart', isAuthenticated, async (req, res) => {
     }
 });
 
-router.put('/cart/:id', isAuthenticated, async (req, res) => {
+// Rotta per aggiornare la quantità di un prodotto nel carrello usando productId
+router.put('/cart/product/:productId', isAuthenticated, async (req, res) => {
     try {
         const { quantity } = req.body;
+        const { productId } = req.params;
+
         if (quantity <= 0) {
-             await cartDao.removeCartItem(req.params.id, req.user.id);
+             await cartDao.removeCartItemByProductId(productId, req.user.id);
+             res.json({ success: true, message: 'Prodotto rimosso dal carrello' });
         } else {
-            await cartDao.updateCartItem(req.params.id, req.user.id, quantity);
+            await cartDao.updateCartItemByProductId(productId, req.user.id, quantity);
+            res.json({ success: true, message: 'Carrello aggiornato' });
         }
-        res.json({ success: true, message: 'Carrello aggiornato' });
     } catch (error) {
         console.error('Errore aggiornamento carrello:', error);
         res.status(500).json({ success: false, message: 'Errore nell\'aggiornamento' });
     }
 });
 
-router.delete('/cart/:id', isAuthenticated, async (req, res) => {
+// Rotta per rimuovere un prodotto dal carrello usando productId
+router.delete('/cart/product/:productId', isAuthenticated, async (req, res) => {
     try {
-        await cartDao.removeCartItem(req.params.id, req.user.id);
+        await cartDao.removeCartItemByProductId(req.params.productId, req.user.id);
         res.json({ success: true, message: 'Prodotto rimosso dal carrello' });
     } catch (error) {
         console.error('Errore rimozione carrello:', error);
         res.status(500).json({ success: false, message: 'Errore nella rimozione' });
     }
 });
+
+// Rotta per svuotare il carrello
+router.delete('/cart/all', isAuthenticated, async (req, res) => {
+    try {
+        await cartDao.clearCart(req.user.id);
+        res.json({ success: true, message: 'Carrello svuotato con successo' });
+    } catch (error) {
+        console.error('Errore svuotamento carrello:', error);
+        res.status(500).json({ success: false, message: 'Errore nello svuotamento del carrello' });
+    }
+});
+
 
 // --- ORDINI ---
 router.get('/user/orders', isAuthenticated, async (req, res) => {

@@ -4,7 +4,9 @@ const db = require('../../db').db;
 exports.getCartItems = (userId) => {
     return new Promise((resolve, reject) => {
         const sql = `
-            SELECT ci.*, p.name, p.price, p.image_url, (ci.quantity * p.price) as subtotal
+            SELECT ci.id as cart_item_id, ci.product_id, ci.quantity, 
+                   p.name, p.price, p.image_url, 
+                   (ci.quantity * p.price) as subtotal
             FROM cart_items ci
             JOIN products p ON ci.product_id = p.id
             WHERE ci.user_id = ?`;
@@ -29,20 +31,20 @@ exports.addToCart = (userId, productId, quantity) => {
     });
 };
 
-exports.updateCartItem = (cartItemId, userId, quantity) => {
+exports.updateCartItemByProductId = (productId, userId, quantity) => {
     return new Promise((resolve, reject) => {
-        const sql = `UPDATE cart_items SET quantity = ? WHERE id = ? AND user_id = ?`;
-        db.run(sql, [quantity, cartItemId, userId], function(err) {
+        const sql = `UPDATE cart_items SET quantity = ? WHERE product_id = ? AND user_id = ?`;
+        db.run(sql, [quantity, productId, userId], function(err) {
             if (err) reject(err);
             else resolve(this);
         });
     });
 };
 
-exports.removeCartItem = (cartItemId, userId) => {
+exports.removeCartItemByProductId = (productId, userId) => {
     return new Promise((resolve, reject) => {
-        const sql = `DELETE FROM cart_items WHERE id = ? AND user_id = ?`;
-        db.run(sql, [cartItemId, userId], function(err) {
+        const sql = `DELETE FROM cart_items WHERE product_id = ? AND user_id = ?`;
+        db.run(sql, [productId, userId], function(err) {
             if (err) reject(err);
             else resolve(this);
         });
