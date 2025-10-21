@@ -205,6 +205,41 @@
         <script src="/js/ricerca.js"></script>
         <script src="/js/carrello.js"></script>
 
+        <script>
+            // 1. Dice al browser di non gestire lo scorrimento in automatico
+            if (history.scrollRestoration) {
+                history.scrollRestoration = 'manual';
+            }
+
+            // 2. Prima che la pagina si aggiorni, salva la posizione attuale
+            window.addEventListener('beforeunload', () => {
+                sessionStorage.setItem('scrollPosition', window.scrollY);
+            });
+
+            // 3. Appena la pagina è pronta...
+            document.addEventListener('DOMContentLoaded', () => {
+                // LA MODIFICA CHIAVE È QUI:
+                // Controlliamo se la pagina è stata caricata tramite un "reload"
+                const navEntries = performance.getEntriesByType("navigation");
+                if (navEntries.length > 0 && navEntries[0].type === 'reload') {
+
+                    // Se è un reload, cerchiamo la posizione salvata
+                    const scrollPosition = sessionStorage.getItem('scrollPosition');
+                    if (scrollPosition) {
+                        // Eseguiamo lo scorrimento dolce
+                        setTimeout(() => {
+                            window.scrollTo({
+                                top: parseInt(scrollPosition, 10),
+                                behavior: 'smooth'
+                            });
+                        }, 100);
+                    }
+                }
+                // In ogni caso, puliamo la vecchia posizione per evitare problemi
+                sessionStorage.removeItem('scrollPosition');
+            });
+        </script>
+
         <!-- JS specifici della pagina -->
         <% if (locals.extraJS && extraJS.length > 0) { %>
             <% extraJS.forEach(function(js) { %>
