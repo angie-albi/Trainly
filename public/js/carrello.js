@@ -245,7 +245,7 @@ function aggiornaInterfacciaCarrello() {
         if (isUserAuthenticated) {
             // Se l'utente è loggato, mostra il bottone per il checkout
             bottoneAzioneHtml = `
-                <button class="btn btn-checkout w-100 mb-2 text-white" onclick="procediCheckout()">
+                <button class="btn bg-checkout w-100 mb-2 text-white" onclick="procediCheckout()">
                     Procedi al checkout
                 </button>
             `;
