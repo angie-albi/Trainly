@@ -4,7 +4,7 @@ const db = require('../../db').db;
 // Funzioni per gestire i prodotti (Product DAO)
 exports.getAllProducts = () => {
     return new Promise((resolve, reject) => {
-        const sql = `SELECT id, name as title, description, category, price, image_url as image, available, created_at FROM products WHERE available = 1 ORDER BY created_at DESC`;
+        const sql = `SELECT id, name, description, category, price, image_url, available, created_at FROM products WHERE available = 1 ORDER BY created_at DESC`;
         db.all(sql, [], (err, rows) => {
             if (err) reject(err);
             else resolve(rows || []);
@@ -14,7 +14,7 @@ exports.getAllProducts = () => {
 
 exports.getProductById = (id) => {
     return new Promise((resolve, reject) => {
-        const sql = `SELECT id, name as title, description, category, price, image_url as image, available FROM products WHERE id = ? AND available = 1`;
+        const sql = `SELECT id, name, description, category, price, image_url, available FROM products WHERE id = ? AND available = 1`;
         db.get(sql, [id], (err, row) => {
             if (err) reject(err);
             else resolve(row);

@@ -423,16 +423,16 @@ footer small a:hover {
     background: rgb(24, 72, 162);
 }
 
-.d-flex .btn-outline:hover,
-.btn-delete:hover {
+.d-flex .btn-outline:hover {
     background: rgb(24, 72, 162);
     transform: scale(1.15);
     transition: transform 0.3s ease;
     color: white !important;
 }
 
-.btn-delete {
-    color: rgb(24, 72, 162);
+.btn-delete:hover {
+    background: red;
+    color:white;
 }
 
 #cartOffcanvas .offcanvas-header {

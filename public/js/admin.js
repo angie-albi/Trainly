@@ -100,13 +100,13 @@ function displayProducts(productsToShow = allProducts) {
         const row = document.createElement('tr');
         row.innerHTML = `
             <td class="ps-3">
-                <img src="${product.image || '/img/placeholder.png'}" 
-                     alt="${product.title || ''}" 
-                     style="width: 70px; height: 70px; object-fit: cover; " 
-                     class="rounded"
-                     onerror="this.src='/img/placeholder.png'">
+                <img src="${product.image_url || '/img/placeholder.png'}" 
+                    alt="${product.name || ''}" 
+                    style="width: 70px; height: 70px; object-fit: cover; " 
+                    class="rounded"
+                    onerror="this.src='/img/placeholder.png'">
             </td>
-            <td><strong>${product.title || ''}</strong></td>
+            <td><strong>${product.name || ''}</strong></td>
             <td><span class="badge bg-${getCategoryColor(product.category)}">${getCategoryName(product.category)}</span></td>
             <td><strong>€${(product.price || 0).toFixed(2)}</strong></td>
             <td>
@@ -194,10 +194,10 @@ function editProduct(productId) {
 
     if (elements.modalTitle) elements.modalTitle.textContent = 'Modifica Prodotto';
     if (elements.productId) elements.productId.value = product.id;
-    if (elements.productTitle) elements.productTitle.value = product.title || '';
+    if (elements.productTitle) elements.productTitle.value = product.name || '';
     if (elements.productCategory) elements.productCategory.value = product.category || '';
     if (elements.productPrice) elements.productPrice.value = product.price || 0;
-    if (elements.productImage) elements.productImage.value = product.image || '';
+    if (elements.productImage) elements.productImage.value = product.image_url || '';
     if (elements.productDescription) elements.productDescription.value = product.description || '';
 
     const modal = document.getElementById('productModal');
@@ -226,12 +226,17 @@ async function saveProduct() {
         available: 1,
     };
 
+    let imageUrl = elements.productImage ? elements.productImage.value.trim() : '';
+    if (imageUrl && !imageUrl.startsWith('/img/') && !imageUrl.startsWith('http')) {
+        imageUrl = '/img/' + imageUrl;
+    }
+
     const productId = elements.productId ? elements.productId.value : '';
     const productData = {
-        name: elements.productTitle ? elements.productTitle.value.trim() : '', // L'API si aspetta 'name'
+        name: elements.productTitle ? elements.productTitle.value.trim() : '',
         category: elements.productCategory ? elements.productCategory.value : '',
         price: elements.productPrice ? parseFloat(elements.productPrice.value) || 0 : 0,
-        image_url: elements.productImage ? elements.productImage.value.trim() : '', // L'API si aspetta 'image_url'
+        image_url: imageUrl, 
         description: elements.productDescription ? elements.productDescription.value.trim() : ''
     };
 
@@ -426,7 +431,7 @@ function searchProducts() {
     }
 
     const filtered = allProducts.filter(product => {
-        const title = (product.title || '').toLowerCase();
+        const title = (product.name || '').toLowerCase();
         const description = (product.description || '').toLowerCase();
         const category = (product.category || '').toLowerCase();
         
