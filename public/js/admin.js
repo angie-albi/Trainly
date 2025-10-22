@@ -39,8 +39,43 @@ async function deleteProductFromServer(productId) {
         return await res.json();
     } catch (err) {
         console.error('Errore eliminazione prodotto:', err);
+        showErrorModal('Errore eliminazione prodotto', err.message || 'Errore di connessione durante l\'eliminazione');
         return { success: false, message: 'Errore di connessione durante l\'eliminazione' };
     }
+}
+
+function showErrorModal(title, message) {
+    if (!document.getElementById('errorModal')) {
+        const modalHtml = `
+            <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header bg-danger text-white">
+                            <h5 class="modal-title" id="errorModalLabel">Errore</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body text-black">
+                            <p id="errorModalMessage"></p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.body.insertAdjacentHTML('beforeend', modalHtml);
+    }
+
+    const modal = document.getElementById('errorModal');
+    const messageEl = document.getElementById('errorModalMessage');
+    const titleEl = modal.querySelector('.modal-title');
+    
+    titleEl.textContent = title;
+    messageEl.textContent = message;
+    
+    const bsModal = new bootstrap.Modal(modal);
+    bsModal.show();
 }
 
 // ───────── UI ─────────
@@ -222,10 +257,48 @@ async function saveProduct() {
     }
 }
 
-async function deleteProduct(productId) {
-    if (!confirm('Sei sicuro di voler eliminare questo prodotto? L\'azione è irreversibile.')) return;
+function showDeleteConfirmationModal(productId) {
+    if (!document.getElementById('deleteProductModal')) {
+        const modalHtml = `
+            <div class="modal fade" id="deleteProductModal" tabindex="-1" aria-labelledby="deleteProductModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header text-white">
+                            <h5 class="modal-title" id="deleteProductModalLabel">Conferma eliminazione</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body text-black">
+                            Sei sicuro di voler eliminare questo prodotto? <br> L'azione è irreversibile.
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Annulla</button>
+                            <button type="button" class="btn btn-confirm-delete text-white" onclick="confirmDeleteProduct(this.getAttribute('data-product-id'))">Elimina</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.body.insertAdjacentHTML('beforeend', modalHtml);
+    }
 
+    const modal = document.getElementById('deleteProductModal');
+    const confirmButton = modal.querySelector('.btn-confirm-delete');
+    confirmButton.setAttribute('data-product-id', productId);
+    
+    const bsModal = new bootstrap.Modal(modal);
+    bsModal.show();
+}
+
+function deleteProduct(productId) {
+    showDeleteConfirmationModal(productId);
+}
+
+async function confirmDeleteProduct(productId) {
     try {
+        const modal = document.getElementById('deleteProductModal');
+        const bsModal = bootstrap.Modal.getInstance(modal);
+        if (bsModal) bsModal.hide();
+
         const result = await deleteProductFromServer(productId);
 
         if (result && result.success) {
@@ -290,8 +363,8 @@ function displayOrders(orders) {
             <td><span class="badge bg-${getStatusColor(order.status)}">${getStatusText(order.status)}</span></td>
             <td><strong>€${parseFloat(order.total).toFixed(2)}</strong></td>
             <td>
-                <a href="/confermaOrdine?orderId=${order.id}" class="btn btn-sm btn-outline-primary" title="Vedi Dettagli">
-                    <i class="bi bi-eye"></i> Dettagli
+                <a href="/confermaOrdine?orderId=${order.id}" class="btn btn-sm btn-custom text-white px-3" title="Vedi Dettagli">
+                    <i class="bi bi-eye me-2"></i>Dettagli
                 </a>
             </td>
         `;
@@ -323,7 +396,7 @@ function getStatusText(status) {
     return texts[status] || status;
 }
 
-// ───────── TOAST + LOGOUT ─────────
+// ───────── TOAST ─────────
 function showToast(message, type = 'success') {
     const toastEl = document.getElementById('successToast');
     const toastMessage = document.getElementById('toastMessage');
@@ -338,12 +411,6 @@ function showToast(message, type = 'success') {
     
     if (typeof bootstrap !== 'undefined') {
         new bootstrap.Toast(toastEl).show();
-    }
-}
-
-function logout() {
-    if (confirm('Sei sicuro di voler uscire?')) {
-        window.location.href = '/logout';
     }
 }
 

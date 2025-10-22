@@ -74,13 +74,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (cartItems.length > 0) {
                         renderCartItems();
                         calculateTotals();
-                        
-                        // Avvisa l'utente che deve loggarsi per completare l'ordine
-                        if (confirm('Il tuo carrello contiene prodotti non salvati. Devi loggarti per completare l\'ordine. Vuoi accedere ora?')) {
-                            // Salva il carrello temporaneamente per dopo il login
-                            localStorage.setItem('tempCart', JSON.stringify(cartItems));
-                            window.location.href = '/accedi?redirect=/checkout';
-                        }
                         return;
                     }
                 }

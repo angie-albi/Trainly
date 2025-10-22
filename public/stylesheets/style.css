@@ -100,7 +100,6 @@ nav div svg:not(.bi-dumbbell):hover {
     transform: scale(1.2);
 }
 
-.bi-dumbbell:hover,
 .bi-chevron-down:hover,
 .bi-person:hover,
 .bi-cart:hover,
@@ -216,7 +215,7 @@ footer {
     border: none;
 }
 
-.carrello-footer .btn-checkout {
+.carrello-footer .btn-checkout, .modal-footer .btn-confirm-logout {
     background: rgb(24, 72, 162);
 }
 
@@ -584,7 +583,7 @@ footer small a:hover {
 /* ==========================================================================
    STILI PAGINA ADMIN (admin.css)
    ========================================================================== */
-.admin-header {
+.admin-header{
     background: rgb(17, 57, 133);
     color: white;
 }
@@ -631,6 +630,10 @@ footer small a:hover {
 
 #adminPanel {
     margin-top: auto;
+}
+
+.modal-footer .btn-confirm-delete {
+    background: rgb(24, 72, 162);
 }
 
 
