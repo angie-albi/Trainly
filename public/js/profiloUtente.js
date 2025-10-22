@@ -219,8 +219,8 @@ async function loadUserOrders() {
                             <span class="badge bg-${getStatusColor(order.status)} mb-2">${getStatusText(order.status)}</span>
                         </div>
                         <div>
-                            <button class="btn btn-sm btn-custom text-white" onclick="viewOrderDetails(${order.id})">
-                                <i class="bi bi-eye me-1"></i>Dettagli
+                            <button class="btn btn-sm btn-custom text-white px-3" onclick="viewOrderDetails(${order.id})">
+                                <i class="bi bi-eye me-2"></i>Dettagli
                             </button>
                         </div>
                     </div>

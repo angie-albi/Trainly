@@ -47,16 +47,18 @@ main.container:has(#adminPanel) {
     border: 2px solid white; 
 }
 
-#cartOffcanvas .carrello-lista::-webkit-scrollbar-thumb:hover {
-    transform: scale(1.03);
-    transition: transform 0.3s ease;
+::-webkit-scrollbar-thumb:hover {
+    background: royalblue;
 }
 
 /* carrello */
-
 #cartOffcanvas .carrello-lista::-webkit-scrollbar-thumb {
     background: white;  
     border-color: rgb(17, 57, 133);
+}
+
+#cartOffcanvas .carrello-lista::-webkit-scrollbar-thumb:hover {
+    background: lightgrey;
 }
 
 /* ==========================================================================
@@ -90,9 +92,7 @@ main.container:has(#adminPanel) {
 .bi-chevron-down,
 .bi-person,
 .bi-cart,
-.bi-search,
-.btn1:focus,
-.btn1.show {
+.bi-search {
     color: royalblue;
 }
 
@@ -100,8 +100,11 @@ nav div svg:not(.bi-dumbbell):hover {
     transform: scale(1.2);
 }
 
-.bi:not(.bi-dumbbell, .bi-instagram, .bi-youtube, .bi-facebook):hover,
-#userDropdown.btn1:active {
+.bi-dumbbell:hover,
+.bi-chevron-down:hover,
+.bi-person:hover,
+.bi-cart:hover,
+.bi-search:hover {
     color: rgb(17, 57, 133);
     border-color: rgb(17, 57, 133);
     outline: none;
