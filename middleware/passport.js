@@ -3,7 +3,7 @@
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcrypt');
-const userDao = require('../models/dao/user-dao'); 
+const userDao = require('../models/dao/utenti-dao'); 
 
 module.exports = function(passport) {
     // Configurazione della strategia locale

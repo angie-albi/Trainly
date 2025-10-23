@@ -536,6 +536,12 @@ function resetAllFilters() {
     const searchInput = document.querySelector('input[type="search"]');
     if (searchInput) searchInput.value = '';
 
+    // Pulisci il messaggio di ricerca -- QUESTA È LA RIGA AGGIUNTA
+    const searchMessage = document.getElementById('search-message');
+    if (searchMessage) {
+        searchMessage.textContent = '';
+    }
+
     // Rimuovi evidenziazione categorie
     document.querySelectorAll('[data-category-filter]').forEach(link => {
         link.classList.remove('fw-bold', 'text-primary');
@@ -547,9 +553,6 @@ function resetAllFilters() {
     updateActiveFilterDisplay();
     toggleShowAllButton();
 }
-
-
-
 
 // Funzioni esportate per uso globale
 window.loadProducts = loadProducts;
