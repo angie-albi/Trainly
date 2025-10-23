@@ -267,11 +267,9 @@ function validateRegistrationData(data) {
         return 'La password deve contenere almeno una lettera maiuscola, una minuscola, un numero e un carattere speciale';
     }
     
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-        return 'Formato email non valido';
+    if (!validateEmail(email)) {
+        return 'Formato dell\'email non è valido.';
     }
-    
     return null;
 }
 

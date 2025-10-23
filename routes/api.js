@@ -14,7 +14,7 @@ const paymentDao = require('../models/dao/pagamenti-dao');
 
 // Funzioni di validazione
 function validateEmail(email) {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/;
     return emailRegex.test(email);
 }
 
@@ -69,7 +69,7 @@ router.post('/newsletter', async (req, res) => {
     try {
         const { email } = req.body;
         if (!email || !validateEmail(email)) {
-            return res.status(400).json({ success: false, message: 'Email non valida' });
+            return res.status(400).json({ success: false, message: 'Formato dell\'email non è valido.' });
         }
         await newsletterDao.subscribe(email.toLowerCase().trim());
         res.json({ success: true, message: 'Iscrizione alla newsletter effettuata con successo!' });
@@ -271,9 +271,13 @@ router.post('/contacts', async (req, res) => {
     try {
         const { name, email, message } = req.body;
 
-        // Validazione semplice
+        // Validazione
         if (!name || !email || !message) {
             return res.status(400).json({ success: false, message: 'Tutti i campi sono obbligatori.' });
+        }
+
+        if (!validateEmail(email)) {
+            return res.status(400).json({ success: false, message: 'Formato dell\'email non è valido.' });
         }
 
         await contactDao.createContactMessage({ name, email, message });
