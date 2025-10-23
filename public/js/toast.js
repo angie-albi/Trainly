@@ -66,24 +66,23 @@ let toastManager = {
     },
 
     handleContactSubmit: function(e) {
-        e.preventDefault();
-        
+        e.preventDefault(); // Ferma l'invio standard del form
+        e.stopPropagation(); // Impedisce all'evento di propagarsi ulteriormente
+
         const form = e.target;
-        
-        // Validazione form
+
+        // Controlla se il form non è valido
         if (!form.checkValidity()) {
-            form.classList.add('was-validated');
-            return false;
+            form.classList.add('was-validated'); // Se non lo è, mostra gli errori di validazione
+            return; // E fermati qui
         }
-        
-        // Form valido - mostra toast di successo
-        this.showContactToast();
-        
-        // Reset form
+
+        // Se il codice arriva qui, il form è valido
+        this.showContactToast(); // Mostra il messaggio di successo
+
+        // Svuota il form e rimuovi gli stili di validazione
         form.reset();
         form.classList.remove('was-validated');
-        
-        return false;
     },
 
     showNewsletterToast: function() {

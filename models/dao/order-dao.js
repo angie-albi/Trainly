@@ -17,9 +17,7 @@ exports.createOrder = (userId, total) => {
 exports.addOrderItems = (orderId, cartItems) => {
     const promises = cartItems.map(item => {
         return new Promise((resolve, reject) => {
-            // Aggiungiamo product_name alla query
             const sql = `INSERT INTO order_items (order_id, product_id, quantity, unit_price, product_name) VALUES (?, ?, ?, ?, ?)`;
-            // Aggiungiamo item.name ai parametri
             db.run(sql, [orderId, item.product_id, item.quantity, item.price, item.name], (err) => {
                 if (err) {
                     reject(err);
