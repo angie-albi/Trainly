@@ -65,24 +65,42 @@ let toastManager = {
         }
     },
 
-    handleContactSubmit: function(e) {
-        e.preventDefault(); // Ferma l'invio standard del form
-        e.stopPropagation(); // Impedisce all'evento di propagarsi ulteriormente
+    handleContactSubmit: async function(e) {
+        e.preventDefault();
+        e.stopPropagation();
 
         const form = e.target;
-
-        // Controlla se il form non è valido
         if (!form.checkValidity()) {
-            form.classList.add('was-validated'); // Se non lo è, mostra gli errori di validazione
-            return; // E fermati qui
+            form.classList.add('was-validated');
+            return;
         }
 
-        // Se il codice arriva qui, il form è valido
-        this.showContactToast(); // Mostra il messaggio di successo
+        const name = document.getElementById('name').value;
+        const email = document.getElementById('email').value;
+        const message = document.getElementById('message').value;
 
-        // Svuota il form e rimuovi gli stili di validazione
-        form.reset();
-        form.classList.remove('was-validated');
+        try {
+            const response = await fetch('/api/contacts', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, email, message })
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                this.showContactToast(); // Mostra il toast di successo
+                form.reset();
+                form.classList.remove('was-validated');
+            } else {
+                // Mostra un errore se il server risponde con 'success: false'
+                alert(result.message || 'Si è verificato un errore.');
+            }
+        } catch (error) {
+            // Mostra un errore in caso di problemi di rete
+            console.error('Errore invio form contatti:', error);
+            alert('Impossibile inviare il messaggio. Controlla la tua connessione e riprova.');
+        }
     },
 
     showNewsletterToast: function() {

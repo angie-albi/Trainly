@@ -4,12 +4,13 @@ const router = express.Router();
 const bcrypt = require('bcrypt');
 
 // Import di tutti i DAO
-const productDao = require('../models/dao/product-dao');
-const orderDao = require('../models/dao/order-dao');
-const userDao = require('../models/dao/user-dao');
-const cartDao = require('../models/dao/cart-dao');
+const contactDao = require('../models/dao/contatti-dao');
+const productDao = require('../models/dao/prodotti-dao');
+const orderDao = require('../models/dao/ordini-dao');
+const userDao = require('../models/dao/utenti-dao');
+const cartDao = require('../models/dao/carrello-dao');
 const newsletterDao = require('../models/dao/newsletter-dao');
-const paymentDao = require('../models/dao/payment-dao');
+const paymentDao = require('../models/dao/pagamenti-dao');
 
 // Funzioni di validazione
 function validateEmail(email) {
@@ -262,6 +263,25 @@ router.post('/checkout', isAuthenticated, async (req, res) => {
     } catch (error) {
         console.error('Errore durante il checkout:', error);
         res.status(500).json({ success: false, message: 'Errore durante il checkout' });
+    }
+});
+
+// --- CONTATTI ---
+router.post('/contacts', async (req, res) => {
+    try {
+        const { name, email, message } = req.body;
+
+        // Validazione semplice
+        if (!name || !email || !message) {
+            return res.status(400).json({ success: false, message: 'Tutti i campi sono obbligatori.' });
+        }
+
+        await contactDao.createContactMessage({ name, email, message });
+        res.json({ success: true, message: 'Messaggio inviato con successo!' });
+
+    } catch (error) {
+        console.error('Errore durante il salvataggio del messaggio di contatto:', error);
+        res.status(500).json({ success: false, message: 'Errore interno del server.' });
     }
 });
 
