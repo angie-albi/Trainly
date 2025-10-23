@@ -121,14 +121,14 @@ function displayProducts(products) {
 function createProductCard(product) {
     const title = product.title || '';
     const desc = product.description || '';
-    const img = product.image || '/assest/img/placeholder.png';
+    const img = product.image || '/img/placeholder.png';
     const price = (typeof product.price === 'number') ? product.price : parseFloat(product.price) || 0;
     const id = product.id || '';
 
     return `
     <div class="col product-item">
       <div class="card h-100 shadow-sm product-card" data-product-id="${id}" data-category="${product.category || ''}" data-price="${price}">
-        <img src="${img}" class="card-img-top" alt="${escapeHtml(title)}" loading="lazy" onerror="this.src='/assest/img/placeholder.png';this.onerror=null;">
+        <img src="${img}" class="card-img-top" alt="${escapeHtml(title)}" loading="lazy">
         <div class="card-body d-flex flex-column">
           <h5 class="card-title">${escapeHtml(title)}</h5>
           <p class="card-text">${escapeHtml(truncateText(desc, 400))}</p>
