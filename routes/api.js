@@ -2,6 +2,7 @@
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
+const { body, validationResult } = require('express-validator');
 
 // Import di tutti i DAO
 const contactDao = require('../models/dao/contatti-dao');
@@ -196,6 +197,44 @@ router.delete('/cart/all', isAuthenticated, async (req, res) => {
     }
 });
 
+router.post('/register',
+    [
+        body('nome').trim().notEmpty().withMessage('Il nome è obbligatorio.'),
+        body('cognome').trim().notEmpty().withMessage('Il cognome è obbligatorio.'),
+        body('email').isEmail().withMessage('Il formato dell\'email non è valido.').normalizeEmail(),
+        body('password')
+            .isLength({ min: 8 }).withMessage('La password deve essere di almeno 8 caratteri.')
+            .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/).withMessage('La password deve contenere maiuscole, minuscole, numeri e un simbolo.'),
+        body('confirmPassword').custom((value, { req }) => {
+            if (value !== req.body.password) {
+                throw new Error('Le password non corrispondono.');
+            }
+            return true;
+        })
+    ],
+    async (req, res) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ success: false, message: errors.array({ onlyFirstError: true })[0].msg });
+        }
+
+        try {
+            const { nome, cognome, email, password } = req.body;
+            const userExists = await userDao.findByEmail(email);
+            if (userExists) {
+                return res.status(409).json({ success: false, message: 'Un utente con questa email è già registrato.' });
+            }
+
+            await userDao.createUser({ nome, cognome, email, password });
+            return res.status(201).json({ success: true, message: 'Registrazione completata!' });
+
+        } catch (error) {
+            console.error('Errore API registrazione:', error);
+            return res.status(500).json({ success: false, message: 'Errore interno del server.' });
+        }
+    }
+);
+
 
 // --- ORDINI ---
 router.get('/user/orders', isAuthenticated, async (req, res) => {
@@ -288,6 +327,7 @@ router.post('/contacts', async (req, res) => {
         res.status(500).json({ success: false, message: 'Errore interno del server.' });
     }
 });
+
 
 
 // ###### ROUTE ADMIN ######
