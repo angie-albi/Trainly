@@ -223,7 +223,6 @@ async function saveProduct() {
         productPrice: document.getElementById('productPrice'),
         productImage: document.getElementById('productImage'),
         productDescription: document.getElementById('productDescription'),
-        available: 1,
     };
 
     let imageUrl = elements.productImage ? elements.productImage.value.trim() : '';
@@ -236,8 +235,9 @@ async function saveProduct() {
         name: elements.productTitle ? elements.productTitle.value.trim() : '',
         category: elements.productCategory ? elements.productCategory.value : '',
         price: elements.productPrice ? parseFloat(elements.productPrice.value) || 0 : 0,
-        image_url: imageUrl, 
-        description: elements.productDescription ? elements.productDescription.value.trim() : ''
+        image_url: imageUrl,
+        description: elements.productDescription ? elements.productDescription.value.trim() : '',
+        available: 1
     };
 
     try {

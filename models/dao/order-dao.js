@@ -15,11 +15,12 @@ exports.createOrder = (userId, total) => {
 };
 
 exports.addOrderItems = (orderId, cartItems) => {
-    // Crea una serie di promesse, una per ogni articolo da inserire
     const promises = cartItems.map(item => {
         return new Promise((resolve, reject) => {
-            const sql = `INSERT INTO order_items (order_id, product_id, quantity, unit_price) VALUES (?, ?, ?, ?)`;
-            db.run(sql, [orderId, item.product_id, item.quantity, item.price], (err) => {
+            // Aggiungiamo product_name alla query
+            const sql = `INSERT INTO order_items (order_id, product_id, quantity, unit_price, product_name) VALUES (?, ?, ?, ?, ?)`;
+            // Aggiungiamo item.name ai parametri
+            db.run(sql, [orderId, item.product_id, item.quantity, item.price, item.name], (err) => {
                 if (err) {
                     reject(err);
                 } else {
@@ -28,7 +29,6 @@ exports.addOrderItems = (orderId, cartItems) => {
             });
         });
     });
-    // Esegue tutte le promesse di inserimento
     return Promise.all(promises);
 };
 
@@ -56,17 +56,16 @@ exports.getOrderById = (orderId, userId, isAdmin) => {
 
 exports.getOrderItems = (orderId) => {
     const sql = `
-        SELECT oi.quantity, oi.unit_price, p.name as title 
-        FROM order_items oi 
-        JOIN products p ON oi.product_id = p.id 
-        WHERE oi.order_id = ?`;
+        SELECT quantity, unit_price, product_name as title 
+        FROM order_items 
+        WHERE order_id = ?`;
     return new Promise((resolve, reject) => {
         db.all(sql, [orderId], (err, rows) => {
             if (err) reject(err);
             else resolve(rows);
         });
     });
-};
+}
 
 exports.getUserOrders = (userId) => {
     const sql = `
