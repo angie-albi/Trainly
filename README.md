@@ -71,7 +71,7 @@ Per avviare il progetto in locale, segui questi semplici passaggi
 
 2.  **Spostati nella directory del progetto**
     ```bash
-    cd Trainly    
+    cd Progetto_Metodologie_Web_Trainly    
     ```
     
 3.  **Installa le dipendenze** del progetto. Apri un terminale nella cartella principale ed esegui
