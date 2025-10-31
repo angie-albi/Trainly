@@ -66,7 +66,7 @@ Per avviare il progetto in locale, segui questi semplici passaggi
 
 1.  **Clona il repository** (o scarica i file in una cartella)
     ```bash
-    git clone https://github.com/angie-albi/Trainly.git    
+    git clone https://github.com/angie-albi/Progetto_Metodologie_Web_Trainly.git    
     ```
 
 2.  **Spostati nella directory del progetto**
