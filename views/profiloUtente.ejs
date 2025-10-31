@@ -1,0 +1,111 @@
+<%- include('partials/header', { title: 'Profilo utente'}) %>            
+    <%- include('partials/navbar', { currentPage: 'profiloUtente' }) %>
+
+    <!-- MAIN -->
+    <main class="container my-5 px-5">
+        <h2 class="mb-4" id="benvenutoUtente">
+            <% if (user) { %>
+                Benvenuto, <%= user.nome %>!
+            <% } else { %>
+                Benvenuto!
+            <% } %>
+        </h2>
+        <p class="lead mb-4">Qui puoi visualizzare e gestire le tue informazioni personali e i tuoi acquisti.</p>
+
+        <!-- Profilo -->
+        <div class="card p-4 mb-5 shadow-sm">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h3 class="card-title mb-0">Le tue informazioni personali</h3>
+                <button type="button" id="editBtn" class="btn btn-custom text-white">
+                    <i class="bi bi-pencil-square me-2 d-none d-md-inline"></i>Modifica
+                </button>
+            </div>
+           <form id="profiloForm">
+                <div class="mb-3 row">
+                    <label for="staticEmail" class="col-md-2 col-form-label">Email</label>
+                    <div class="col-sm-10 ps-4">
+                        <input type="email" readonly class="form-control-plaintext" id="staticEmail" value="<%= user ? user.email : '' %>" autocomplete="username">
+                        <small class="text-muted">L'email non può essere modificata</small>
+                    </div>
+                </div>
+
+                <div class="mb-3 row">
+                    <label for="nome" class="col-md-2 col-form-label">Nome</label>
+                    <div class="col-sm-10">
+                        <input type="text" id="nome" value="<%= user ? user.nome : '' %>" class="form-control" disabled required>
+                    </div>
+                </div>
+
+                <div class="mb-3 row">
+                    <label for="cognome" class="col-md-2 col-form-label">Cognome</label>
+                    <div class="col-sm-10">
+                        <input type="text" id="cognome" value="<%= user ? user.cognome : '' %>" class="form-control" disabled required>
+                    </div>
+                </div>
+
+                <div class="mb-3 row" id="currentPasswordRow" style="display: none;">
+                    <label for="currentPassword" class="col-md-2 col-form-label">Password Attuale</label>
+                    <div class="col-sm-10">
+                        <input type="password" id="currentPassword" class="form-control" placeholder="Inserisci la tua password attuale" autocomplete="current-password">
+                        <small class="text-muted">Richiesta per modificare la password, se non conosci la password attuale contattaci per resettarla</a>
+                        </small>
+                    </div>
+                </div>
+
+                <div class="mb-3 row">
+                    <label for="password" class="col-md-2 col-form-label">Nuova Password</label>
+                    <div class="col-sm-10">
+                        <div class="input-group">
+                            <input type="password" id="password" value="••••••••" class="form-control" disabled autocomplete="new-password">
+                            <span class="input-group-text" id="togglePassword">
+                                <i class="bi bi-eye-slash" id="toggleIcon"></i>
+                            </span>
+                        </div>
+                        <div id="passwordStrength" style="display: none;" class="mt-2"></div>
+                        <div id="passwordRequirements" style="display: none;" class="mt-2">
+                            <small class="text-muted d-block mb-1">La password deve contenere:</small>
+                            <div class="password-requirement" data-rule="length">
+                                <i class="bi bi-x-circle text-danger me-1"></i>
+                                <small>Almeno 8 caratteri</small>
+                            </div>
+                            <div class="password-requirement" data-rule="uppercase">
+                                <i class="bi bi-x-circle text-danger me-1"></i>
+                                <small>Almeno una lettera maiuscola (A-Z)</small>
+                            </div>
+                            <div class="password-requirement" data-rule="lowercase">
+                                <i class="bi bi-x-circle text-danger me-1"></i>
+                                <small>Almeno una lettera minuscola (a-z)</small>
+                            </div>
+                            <div class="password-requirement" data-rule="number">
+                                <i class="bi bi-x-circle text-danger me-1"></i>
+                                <small>Almeno un numero (0-9)</small>
+                            </div>
+                            <div class="password-requirement" data-rule="special">
+                                <i class="bi bi-x-circle text-danger me-1"></i>
+                                <small>Almeno un carattere speciale (!@#$%^&*)</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex gap-3 pt-3" id="formButtons">
+                    <button type="submit" class="btn btn-custom text-white" id="saveBtn" style="display: none;">
+                        <i class="bi bi-check-lg me-2"></i>Salva Modifiche
+                    </button>
+                    <button type="button" class="btn btn-light border" id="cancelBtn" style="display: none;">
+                        <i class="bi bi-x-lg me-2"></i>Annulla
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Acquisti -->
+        <div class="card p-4 shadow-sm">
+            <h3 class="card-title mb-4">I tuoi acquisti recenti</h3>
+            <div id="userOrders">
+                <!-- JS -->
+            </div>
+        </div>
+    </main>
+    
+<%- include('partials/footer', { extraJS: ['/js/profiloUtente.js'] }) %>

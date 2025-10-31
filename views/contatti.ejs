@@ -1,0 +1,41 @@
+<%- include('partials/header', { title: 'Contatti' }) %>
+  <%- include('partials/navbar', { currentPage: 'contatti' }) %>
+
+    <!-- MAIN -->
+    <main class="container mt-5 px-5">
+      <div class="row justify-content-center">
+        <div class="col-md-8">
+          <h1 class="card-title text-center mb-4">Contattaci</h1>
+          <p class="text-center">Hai domande sui nostri programmi, sul coaching o hai bisogno di supporto? <br> Contattaci usando il modulo qui sotto</p>
+
+          <!-- Form -->
+          <form id="contactForm" >
+            <div class="mb-3">
+              <label for="name" class="form-label">Nome:</label>
+              <input type="text" class="form-control" id="name" placeholder="Mario" required> 
+            </div>
+            <div class="mb-3">
+              <label for="email" class="form-label">Email:</label>
+              <input type="email" class="form-control" id="email" placeholder="nome@gmail.com" required inputmode="email">
+            </div>
+            <div class="mb-3">
+              <label for="message" class="form-label">Messaggio:</label>
+              <textarea class="form-control" id="message" rows="5" placeholder="Richiesta di informazioni..." required></textarea> 
+            </div>
+            <div class="d-grid gap-2">
+              <button type="submit" class="btn text-white">
+                Invia 
+              </button>
+            </div>
+          </form>
+
+          <p class="text-center text-muted mt-4 contact-info">
+            oppure contattaci via email: 
+            <a href="https://mail.google.com/mail/?view=cm&fs=1&to=info@trainly.it&su=Richiesta%20Informazioni&body=Scrivi%20qui%20il%20tuo%20messaggio" target="_blank" class="email" class="email">info@trainly.it</a> o telefono:
+            <a href="tel:+393540113827">+39 354 011 3827</a>
+          </p>          
+        </div>
+      </div>
+    </main>
+
+<%- include('partials/footer') %>

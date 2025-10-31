@@ -1,0 +1,164 @@
+<!-- Script per la navbar -->
+<script src="/js/navbar.js"></script>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-md p-1 border-bottom sticky-top bg-white">
+    <div class="container-fluid">
+        <!-- Logo -->
+        <a class="navbar-brand name ms-4 my-1" href="/">
+            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="60" viewBox="0 0 640 560" fill="currentColor" class="bi bi-dumbbell">
+                <path d="M96 64c0-17.7 14.3-32 32-32l32 0c17.7 0 32 14.3 32 32l0 160 0 64 0 160c0 17.7-14.3 32-32 32l-32 0c-17.7 0-32-14.3-32-32l0-64-32 0c-17.7 0-32-14.3-32-32l0-64c-17.7 0-32-14.3-32-32s14.3-32 32-32l0-64c0-17.7 14.3-32 32-32l32 0 0-64zm448 0l0 64 32 0c17.7 0 32 14.3 32 32l0 64c17.7 0 32 14.3 32 32s-14.3 32-32 32l0 64c0 17.7-14.3 32-32 32l-32 0 0 64c0 17.7-14.3 32-32 32l-32 0c-17.7 0-32-14.3-32-32l0-160 0-64 0-160c0-17.7 14.3-32 32-32l32 0c17.7 0 32 14.3 32 32zM416 224l0 64-192 0 0-64 192 0z"/>
+            </svg>
+            Trainly
+        </a>
+
+        <!-- Bottone per mobile -->
+        <button class="navbar-toggler border-0 rounded" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar"
+            aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
+            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-three-dots" viewBox="0 0 16 16">
+              <path d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3"/>
+            </svg>
+        </button>
+
+        <!-- Menu desktop -->
+        <div class="collapse navbar-collapse d-none d-md-flex" id="navbarSupportedContent">
+            <ul class="nav justify-content-center flex-grow-1">
+                <li class="nav-item">
+                    <a class="nav-link <%= currentPage === 'home' ? 'fw-bold active' : '' %>" href="/">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link <%= currentPage === 'catalogo' ? 'fw-bold active' : '' %>" href="/catalogo">Catalogo</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link <%= currentPage === 'contatti' ? 'fw-bold active' : '' %>" href="/contatti">Contatti</a>
+                </li>
+            </ul>
+            <!-- Icone -->  
+            <div class="d-flex align-items-center me-3">
+                <!-- ricerca -->
+                <button class="btn pe-2 pb-2 btn-cerca" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasTop" aria-controls="offcanvasTop">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-search me-2" viewBox="0 0 16 16">
+                        <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+                    </svg>
+                </button>
+                <!-- accesso/registrati -->
+                <div class="dropdown">
+                    <a id="userDropdown" class="btn btn-sm d-flex align-items-center py-2 btn1" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-person" viewBox="0 0 16 16">
+                            <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10s-3.516.68-4.168 1.332c-.678.678-.83 1.418-.832 1.664z"/>
+                        </svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" class="bi bi-chevron-down ms-1" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/>
+                        </svg>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <% if (locals.user) { %>
+                            <li><a class="dropdown-item" href="/profiloUtente">Il mio profilo</a></li>
+                            <li><a class="dropdown-item" href="/logout">Logout</a></li>
+                        <% } else { %>
+                            <li class="menu-login"><a class="dropdown-item" href="/accedi">Accedi</a></li>
+                            <li class="menu-register"><a class="dropdown-item" href="/registrati">Registrati</a></li>
+                        <% } %>
+                    </ul>
+                </div>
+                <!-- carrello -->
+                <button class="btn ps-2 btn-carrello" type="button" data-bs-toggle="offcanvas" data-bs-target="#cartOffcanvas" aria-controls="cartOffcanvas">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-cart" viewBox="0 0 16 16">
+                        <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5M3.102 4l1.313 7h8.17l1.313-7zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4m7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4m-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2m7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- OFFCANVAS -->
+    <!-- (carrello) -->
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="cartOffcanvas" aria-labelledby="cartOffcanvasLabel">
+        <div class="offcanvas-header mx-2 mt-3">
+            <h5 class="offcanvas-title text-decoration-underline" id="cartOffcanvasLabel">Il tuo carrello</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body mx-3 d-flex flex-column justify-content-center align-items-center carrello-vuoto">
+            <div class="text-center h3 mb-3 text-decoration-none">Il tuo carrello è vuoto</div>
+            <a class="btn btn-light" href="/catalogo" role="button">Continua lo shopping</a>
+        </div>
+    </div>
+
+    <!-- (cerca)-->
+    <div class="offcanvas offcanvas-top" tabindex="-1" id="offcanvasTop" style="height: 18vh;"aria-labelledby="offcanvasTopLabel">
+        <div class="offcanvas-body p-0 pt-4">            
+            <div class="container-fluid mt-3">
+                <div class="row align-items-center">
+                    <div class="col-11 ps-5 pe-3">
+                        <form class="d-flex w-100" role="search" id="searchForm">
+                            <input type="search" class="form-control form-search" 
+                                placeholder="Cerca prodotti..." aria-label="Search" 
+                                name="search" id="searchInput"> 
+                            <button type="submit" class="btn btn-light ms-2">Cerca</button>
+                        </form>
+                    </div>
+                    <div class="col-1 ps-0 text-end pe-4">
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- menu mobile -->
+    <div class="offcanvas offcanvas-end d-md-none" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+        <div class="offcanvas-header mx-2 mt-3">
+            <h5 class="offcanvas-title text-decoration-underline" id="offcanvasNavbarLabel">Menu</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body mx-3">
+            <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="/">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="/catalogo">Catalogo</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="/contatti">Contatti</a>
+                </li>
+            </ul>
+            <hr>
+            <!-- Icone -->
+            <div class="d-flex align-items-center justify-content-center gap-2 text-center w-100 m-auto">
+                <!-- ricerca -->
+                <button class="btn btn-cerca" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasTop" aria-controls="offcanvasTop">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-search text-white" viewBox="0 0 16 16">
+                        <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+                    </svg>
+                </button>
+                <!-- accedi/regitrati -->
+                <div class="dropdown">
+                    <a id="userDropdown" class="btn btn-sm d-flex align-items-center py-2 btn1" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-person text-white" viewBox="0 0 16 16">
+                            <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10s-3.516.68-4.168 1.332c-.678.678-.83 1.418-.832 1.664z"/>
+                        </svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" class="bi bi-chevron-down ms-1 text-white" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/>
+                        </svg>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <% if (locals.user) { %>
+                            <li><a class="dropdown-item" href="/profiloUtente">Il mio profilo</a></li>
+                            <li><a class="dropdown-item" href="/logout">Logout</a></li>
+                        <% } else { %>
+                            <li class="menu-login"><a class="dropdown-item" href="/accedi">Accedi</a></li>
+                            <li class="menu-register"><a class="dropdown-item" href="/registrati">Registrati</a></li>
+                        <% } %>
+                    </ul>
+                </div>
+                <!-- carrello -->
+                <button class="btn btn-carrello" type="button" data-bs-toggle="offcanvas" data-bs-target="#cartOffcanvas" aria-controls="cartOffcanvas">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-cart text-white" viewBox="0 0 16 16">
+                        <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5M3.102 4l1.313 7h8.17l1.313-7zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4m7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4m-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2m7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>

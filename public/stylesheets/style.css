@@ -1,0 +1,668 @@
+/* ==========================================================================
+   STILI GLOBALI E CORREZIONI LAYOUT
+   ========================================================================== */
+
+/* Correzione per Footer e Layout Principale */
+html {
+    height: 100%;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+    margin: 0;
+    overflow-x: hidden;
+    background-color: #fff;
+}
+
+main {
+    flex-grow: 1;
+}
+
+main:has(.login-container),
+main:has(.registration-container) {
+    height: 85vh;
+}
+
+main.container:has(#adminPanel) {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Stile scrollbar personalizzata */
+::-webkit-scrollbar {
+    width: 12px;
+    background-color: transparent;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgb(17, 57, 133);
+    border-radius: 10px;
+    
+    border: 2px solid white; 
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: royalblue;
+}
+
+/* carrello */
+#cartOffcanvas .carrello-lista::-webkit-scrollbar-thumb {
+    background: white;  
+    border-color: rgb(17, 57, 133);
+}
+
+#cartOffcanvas .carrello-lista::-webkit-scrollbar-thumb:hover {
+    background: lightgrey;
+}
+
+/* ==========================================================================
+   STILI DALLA NAVBAR (navbar.css)
+   ========================================================================== */
+.name,
+.name:hover {
+    color: royalblue;
+    font-size: 35px;
+    text-decoration: none;
+}
+
+.nav .nav-link {
+    text-decoration: none;
+    color: black;
+    font-size: 17px;
+}
+
+.nav-link:hover,
+#cartOffcanvas a.link-info:hover {
+    color: cornflowerblue;
+    text-decoration: underline;
+    transition: color 0.3s ease;
+}
+
+.nav .nav-link.active {
+    color: rgb(17, 57, 133);
+}
+
+.bi-dumbbell,
+.bi-chevron-down,
+.bi-person,
+.bi-cart,
+.bi-search {
+    color: royalblue;
+}
+
+nav div svg:not(.bi-dumbbell):hover {
+    transform: scale(1.2);
+}
+
+.bi-chevron-down:hover,
+.bi-person:hover,
+.bi-cart:hover,
+.bi-search:hover {
+    color: rgb(17, 57, 133);
+    border-color: rgb(17, 57, 133);
+    outline: none;
+}
+
+.btn1[aria-expanded="true"] .bi-chevron-down {
+    transform: rotate(180deg);
+    transition: transform 0.3s;
+}
+
+.offcanvas {
+    color: white;
+    background-color: rgb(17, 57, 133);
+}
+
+.offcanvas-top.show {
+    height: auto;
+    min-height: 18vh;
+    max-height: 20vh;
+    overflow-y: auto;
+}
+
+.offcanvas .btn:hover,
+.navbar .btn:hover {
+    transform: scale(1.03);
+    transition: transform 0.3s ease;
+}
+
+[data-bs-toggle="offcanvas"] {
+    pointer-events: auto;
+    cursor: pointer;
+}
+
+.btn {
+    --bs-btn-border-width: 0%;
+    border: none;
+    border-radius: 20px;
+}
+
+.navbar .btn:hover,
+.btn-light:hover {
+    transform: scale(1.03);
+    transition: transform 0.3s ease;
+}
+
+footer a {
+    color: white;
+    text-decoration: none;
+}
+
+footer a:hover {
+    text-decoration: underline;
+}
+
+footer a svg {
+    width: 24px;
+    height: 24px;
+    transition: transform 0.3s;
+}
+
+footer a:hover svg {
+    transform: scale(1.03);
+    transition: transform 0.3s ease;
+}
+
+footer {
+    border-top: 2px solid royalblue;
+    padding-top: 20px;
+    color: white;
+    background-color: rgb(17, 57, 133);
+    flex-shrink: 0; /* Impedisce al footer di rimpicciolirsi */
+}
+
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: column;
+    }
+
+    .sidenav {
+        display: none;
+    }
+}
+
+.navbar-toggler:focus {
+    color: transparent;
+}
+
+.navbar-toggler:hover {
+    transform: scale(1.05);
+    transition: transform 0.3s ease;
+    color: transparent;
+}
+
+.bi-three-dots {
+    color: royalblue;
+}
+
+.form-search:hover {
+    transition: transform 0.3s ease;
+}
+
+.btn:hover {
+    transform: scale(1.05);
+    transition: transform 0.3s ease;
+}
+
+.btn-custom {
+    background: linear-gradient(90deg, royalblue, rgb(17, 57, 133)) !important;
+    border: none;
+}
+
+.carrello-footer .btn-checkout, .modal-footer .btn-confirm-logout {
+    background: rgb(24, 72, 162);
+}
+
+/* ==========================================================================
+   STILI DALLA HOMEPAGE (style.css originale)
+   ========================================================================== */
+.card-title {
+    color: rgb(17, 57, 133);
+}
+
+.home {
+    color: rgb(17, 57, 133);
+    border-color: rgb(17, 57, 133);
+    outline: none;
+}
+
+.main-catalogo {
+    color: white;
+    background-color: rgb(17, 57, 133);
+}
+
+.card-prod {
+    transition: transform 0.3s cubic-bezier(.4, 2, .6, 1);
+}
+
+.card-prod:hover,
+.btn-discover:hover {
+    transform: scale(1.04);
+    z-index: 2;
+}
+
+.btn-discover {
+    background: linear-gradient(90deg, royalblue, rgb(17, 57, 133));
+    width: 40%;
+}
+
+/* ==========================================================================
+   STILI PAGINE DI AUTENTICAZIONE (accedi.css, registrati.css, profiloUtente.css)
+   ========================================================================== */
+.login-container, .registration-container {
+    width: 100%;
+}
+.login-container {
+    min-width: 300px;
+    max-width: 400px;
+}
+.registration-container {
+    min-width: 400px;
+    max-width: 500px;
+}
+
+.login-brand, .registration-brand {
+    font-size: 2rem;
+}
+.login-title, .registration-title {
+    font-size: 1.5rem;
+}
+
+.form-control {
+    border-radius: 10px;
+    padding: 8px;
+    font-size: 0.85rem;
+}
+
+.form-label {
+    font-size: 0.85rem;
+}
+
+.btn-login, .btn-registration {
+    background: linear-gradient(90deg, royalblue, cornflowerblue);
+    border: none;
+    border-radius: 20px;
+    width: 100%;
+    color: white;
+}
+.btn-login:hover {
+    background: royalblue !important;
+    color: white !important;
+}
+.btn-registration:hover {
+    background: royalblue;
+    color: white;
+}
+
+.help, #toggleIcon, #toggleConfirmIcon {
+    user-select: none;
+}
+
+.bi-eye-slash:hover, .bi-eye:hover {
+    transform: scale(1.04);
+    transition: transform 0.3s ease;
+}
+
+.input-group-text {
+    cursor: pointer;
+}
+
+.reg:hover, .login:hover {
+    color: rgb(17, 57, 133) !important;
+}
+
+/* ==========================================================================
+   STILI PAGINA CATALOGO (catalogo.css)
+   ========================================================================== */
+.card-footer,
+.text-body-secondary {
+    color: white !important;
+    background-color: rgb(17, 57, 133);
+}
+
+h7 {
+    font-size: 13px;
+}
+
+.sidenav {
+    position: fixed;
+    top: 150px;
+    left: 0;
+    width: 25%;
+    padding: 1.5rem;
+    height: calc(100vh - 150px);
+    overflow-y: auto;
+    z-index: 10;
+}
+
+.product {
+    margin-left: 25% !important;
+    padding-left: 2rem;
+}
+
+.product-hidden {
+    display: none !important;
+}
+
+aside .sidenav-link:hover,
+aside .sidenav-link:hover .bi-arrow-right-short {
+    color: rgb(17, 57, 133) !important;
+    font-weight: bold;
+}
+
+aside .sidenav-link:hover .bi-arrow-right-short {
+    stroke: rgb(17, 57, 133);
+    stroke-width: 2;
+}
+
+.sidenav-link {
+    display: flex;
+}
+
+footer small {
+    font-size: 0.95rem;
+}
+
+footer small a:hover {
+    text-decoration: underline !important;
+}
+
+.bi-arrow-right-square:hover,
+.form-control:not(:disabled):hover,
+.btn-show:hover,
+.btn-filtri-mobile:hover,
+.product-item .btn:hover {
+    transform: scale(1.04);
+    transition: transform 0.3s ease;
+}
+
+.offcanvas-body .bi-arrow-right-square:hover,
+.offcanvas-body .sidenav-link:hover {
+    color: white !important;
+    font-weight: bold !important;
+}
+
+.offcanvas-body .sidenav-link.active-filter,
+.offcanvas-body .sidenav-link.active-filter .bi-arrow-right-short {
+    color: white !important;
+    font-weight: bold !important;
+    stroke: white !important;
+    stroke-width: 3 !important;
+}
+
+.btn-show {
+    background: linear-gradient(90deg, royalblue, rgb(17, 57, 133)) !important;
+}
+
+.sidenav-link.active-filter,
+.sidenav-link.active-filter .bi-arrow-right-short {
+    color: rgb(17, 57, 133) !important;
+    font-weight: bold;
+    stroke: rgb(17, 57, 133);
+    stroke-width: 2;
+}
+
+.btn-filtri-mobile {
+    background: linear-gradient(90deg, royalblue, rgb(17, 57, 133));
+}
+
+.product-item img {
+    width: 100%;
+    aspect-ratio: 1 / 1.25;
+    object-fit: cover;
+    object-position: top;
+}
+
+.card-footer .btn-carrello-aggiungi, .modal-footer .btn-svuota-carrello {
+    background: rgb(24, 72, 162);
+}
+
+.d-flex .btn-outline:hover {
+    background: rgb(24, 72, 162);
+    transform: scale(1.15);
+    transition: transform 0.3s ease;
+    color: white !important;
+}
+
+.btn-delete:hover {
+    background: red;
+    color:white;
+}
+
+#cartOffcanvas .offcanvas-header {
+    padding: 0.8rem 1.2rem !important;
+}
+
+#cartOffcanvas .offcanvas-body:not(.carrello-vuoto) {
+    padding-top: 1.5rem !important;
+    justify-content: flex-start !important;
+}
+
+#cartOffcanvas .offcanvas-body.carrello-vuoto,
+#cartOffcanvas .offcanvas-body:has(.text-center.h3) {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
+}
+
+@media (max-width: 991.98px) {
+    .product {
+        margin-left: 0 !important;
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+    }
+
+    .sidenav {
+        display: none;
+    }
+
+    .container-fluid {
+        padding-left: 15px;
+        padding-right: 15px;
+        max-width: 100%;
+    }
+
+    .btn-show {
+        margin-left: 35px !important;
+        background: white !important;
+        color: black !important;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .product {
+        margin-left: 0 !important;
+        padding-left: 0.5rem !important;
+        padding-right: 0.5rem !important;
+    }
+
+    .container-fluid {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    .product-item {
+        margin-bottom: 1rem;
+    }
+
+    .row {
+        margin-left: 0;
+        margin-right: 0;
+    }
+}
+
+/* ==========================================================================
+   STILI PAGINE CHECKOUT E CONFERMA ORDINE
+   ========================================================================== */
+.checkout-card, .order-card {
+    border-radius: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.step-indicator {
+    background: linear-gradient(90deg, royalblue, rgb(17, 57, 133));
+    color: white;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+}
+
+.btn-primary-custom {
+    background: linear-gradient(90deg, royalblue, rgb(17, 57, 133));
+    border: none;
+}
+
+.btn-primary-custom:hover {
+    transform: scale(1.05);
+    transition: transform 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: rgb(17, 57, 133);
+    box-shadow: 0 0 0 0.2rem rgba(17, 57, 133, 0.25);
+}
+
+.sticky-sidebar {
+    position: sticky;
+    top: calc(70px + 1rem);
+    z-index: 1020;
+}
+
+/* Stili Conferma Ordine */
+.success-icon {
+    font-size: 4rem;
+    color: #28a745;
+    animation: bounce 1s ease-in-out;
+}
+
+@keyframes bounce {
+    0%, 20%, 60%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-20px); }
+    80% { transform: translateY(-10px); }
+}
+
+.timeline-item {
+    border-left: 3px solid #28a745;
+    padding-left: 1rem;
+    margin-bottom: 1rem;
+}
+
+.timeline-item.active {
+    border-left-color: rgb(17, 57, 133);
+}
+
+.timeline-item.active .timeline-icon, .bg-custom {
+    background-color: rgb(17, 57, 133);
+    color: white;
+}
+
+.timeline-icon {
+    background-color: #28a745;
+    color: white;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: -18px;
+    margin-right: 1rem;
+}
+
+/* ==========================================================================
+   STILI PAGINA ADMIN (admin.css)
+   ========================================================================== */
+.admin-header{
+    background: rgb(17, 57, 133);
+    color: white;
+}
+
+.admin-header .btn-outline-light {
+    align-items: center;
+}
+
+.admin-header .btn-outline-light:hover {
+    background-color: white;
+    color: rgb(17, 57, 133);
+    border-color: white;
+}
+
+.admin-header .btn-outline-light:hover svg, #adminProfileBtn:hover svg  {
+    fill: rgb(17, 57, 133);
+}
+
+.product-card {
+    transition: all 0.3s ease;
+}
+
+.product-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.btn-admin {
+    background: linear-gradient(90deg, royalblue, rgb(17, 57, 133));
+    border: none;
+    border-radius: 20px;
+}
+
+.btn-admin:hover {
+    background: linear-gradient(90deg, royalblue, rgb(17, 57, 133));
+    transform: translateY(-1px);
+    border: none;
+    border-radius: 20px;
+}
+
+.modal-header {
+    background: linear-gradient(90deg, royalblue, rgb(17, 57, 133));
+}
+
+#adminPanel {
+    margin-top: auto;
+}
+
+.modal-footer .btn-confirm-delete {
+    background: rgb(24, 72, 162);
+}
+
+
+/* ==========================================================================
+   STILI PAGINE INFORMATIVE (chiSiamo, contatti, terminiCondizioni)
+   ========================================================================== */
+main div h1 {
+    color: rgb(17, 57, 133);
+}
+
+/* Stili Contatti */
+.d-grid .btn {
+    background: linear-gradient(90deg, royalblue, rgb(17, 57, 133));
+    border: none;
+    border-radius: 20px;
+    width: 100%;
+}
+
+.d-grid .btn:hover {
+    transform: scale(1.04);
+    transition: transform 0.3s ease;
+}
+
+.contact-info a {
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.contact-info a:hover {
+    text-decoration: underline;
+    color: rgb(17, 57, 133);
+}

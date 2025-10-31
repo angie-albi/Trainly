@@ -1,0 +1,60 @@
+<%- include('partials/header', { title: 'Accedi'}) %>
+  <%- include('partials/navbar', { currentPage: 'accedi' }) %>
+
+    <!-- MAIN -->
+    <main class="d-flex justify-content-center align-items-center">
+      <div class="login-container my-3 p-4 shadow rounded">
+        <div class="login-title text-center fw-bold ">Ti do il benvenuto a</div>
+        <div class="login-brand text-center fw-bold text-primary">Trainly</div>
+      
+        <!-- Messaggi di errore o successo -->
+        <% if (locals.errorMessage && errorMessage.length > 0) { %>
+          <div class="alert alert-danger mt-3" role="alert">
+            <%= errorMessage %>
+          </div>
+        <% } %>
+        
+        <% if (locals.successMessage && successMessage.length > 0) { %>
+          <div class="alert alert-success mt-3" role="alert">
+            <%= successMessage %>
+          </div>
+        <% } %>
+
+        <form id="loginForm" action="/accedi" method="POST">
+          <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" 
+                  class="form-control" 
+                  id="email" 
+                  name="email"
+                  placeholder="nome@gmail.com" 
+                  value="<%= locals.formData ? formData.email || '' : '' %>"
+                  required>
+          </div>
+          <div class="mb-3">
+            <label for="password" class="form-label">Password</label>
+            <div class="input-group">
+              <input 
+                type="password" 
+                class="form-control" 
+                aria-describedby="passwordHelpInline" 
+                id="password" 
+                name="password"
+                placeholder="Password123&" 
+                required>
+              <span class="input-group-text" id="togglePassword">
+                <i class="bi bi-eye-slash" id="toggleIcon"></i>
+              </span>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-login mt-4 p-2 fw-bold">ACCEDI</button>
+  
+          <div class="text-center mt-3">
+            Non hai un account? <a href="/registrati" class="text-primary">Registrati</a> 
+          </div>
+        </form>
+      </div>
+      
+    </main>
+
+<%- include('partials/footer', { extraJS: ['/js/accedi.js', '/js/password.js'] }) %>

@@ -1,0 +1,67 @@
+// Importazione delle dipendenze 
+const app = require('../app');
+const debug = require('debug')('trainly:server');
+const http = require('http');
+const { initDatabase } = require('../db');
+
+// Impostazione dellla porta
+const port = normalizePort(process.env.PORT || '3000');
+app.set('port', port);
+
+// Creazione del server HTTP
+const server = http.createServer(app);
+
+// Inizializzazione del database e avvio del server
+initDatabase()
+  .then(() => {
+    console.log('Database inizializzato');
+    server.listen(port);
+    server.on('error', onError);
+    server.on('listening', onListening);
+  })
+  
+  .catch((err) => {
+    console.error('Errore inizializzazione database:', err);
+    process.exit(1);
+  });
+
+// FUNZIONI
+// Normalizzazione della porta, si assicura che sia un numero valido, una stringa o false
+function normalizePort(val) {
+  const port = parseInt(val, 10);
+  if (isNaN(port)) {  //stringa
+    return val;       //pipe
+  }
+  if (port >= 0) {
+    return port;
+  }
+  return false;
+}
+
+// Gestione degli errori del server
+function onError(error) {
+  if (error.syscall !== 'listen') {
+    throw error;
+  }
+  const bind = typeof port === 'string' ? 'Pipe ' + port : 'Port ' + port;
+  switch (error.code) {
+    case 'EACCES':
+      console.error(bind + ' requires elevated privileges');
+      process.exit(1);
+      break;
+    case 'EADDRINUSE':
+      console.error(bind + ' is already in use');
+      process.exit(1);
+      break;
+    default:
+      throw error;
+  }
+}
+
+// Server in ascolto
+function onListening() {
+  const addr = server.address();
+  const bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port;
+  debug('Listening on ' + bind);
+  console.log(`Server avviato sulla porta ${addr.port} (http://localhost:${addr.port})`);
+}
