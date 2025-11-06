@@ -117,7 +117,7 @@ trainly/
 ├── 📄 db.js               # Gestione della connessione e inizializzazione del DB
 ├── 📄 schema.sql          # Schema del database SQLite
 ├── 📄 package.json        # Dipendenze e script del progetto
-└── 📄 .env.example        # Template per le variabili d'ambiente
+└── 📄 .env                # Template per le variabili d'ambiente
 ```
 
 ## Schema del Database
