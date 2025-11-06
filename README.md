@@ -86,9 +86,7 @@ Per avviare il progetto in locale, segui questi semplici passaggi
     npm start
     ```
 
-5.  **Apri il browser** e visita l'indirizzo:
-    [http://localhost:3000]
-    (https://www.google.com/search?q=http://localhost:3000)
+5.  **Apri il browser** e visita l'indirizzo: http://localhost:3000/
 
 ## Account di Test
 
