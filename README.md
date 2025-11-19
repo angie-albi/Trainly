@@ -118,7 +118,7 @@ Poiché il progetto è configurato come applicazione **Node.js** (include `packa
     ```bash
     npm start
     ```
-5.  Apri il browser all'indirizzo: `http://localhost:3000`
+5.  Apri il browser all'indirizzo: http://localhost:3000
 
 ---
 
