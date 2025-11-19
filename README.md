@@ -1,5 +1,5 @@
 <div align="center">
-  <h1>🏋️ Trainly (Node.js)</h1>
+  <h1>🏋️ Trainly</h1>
   <p>
     Una piattaforma E-commerce web completa per il fitness, dedicata alla vendita di prodotti e servizi digitali.
     <br />
