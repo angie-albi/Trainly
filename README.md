@@ -4,9 +4,9 @@
     Una piattaforma E-commerce web completa per il fitness, dedicata alla vendita di prodotti e servizi digitali.
     <br />
     <br />
-    <img src="[https://img.shields.io/badge/Node.js-16+-339933?style=for-the-badge&logo=nodedotjs&logoColor=white](https://img.shields.io/badge/Node.js-16+-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)" alt="Node Version">
-    <img src="[https://img.shields.io/badge/Express-MVC-000000?style=for-the-badge&logo=express&logoColor=white](https://img.shields.io/badge/Express-MVC-000000?style=for-the-badge&logo=express&logoColor=white)" alt="Express">
-    <img src="[https://img.shields.io/badge/DB-SQLite-003B57?style=for-the-badge&logo=sqlite&logoColor=white](https://img.shields.io/badge/DB-SQLite-003B57?style=for-the-badge&logo=sqlite&logoColor=white)" alt="SQLite">
+    <img src="https://img.shields.io/badge/Node.js-16+-339933?style=for-the-badge&logo=nodedotjs&logoColor=white" alt="Node Version">
+    <img src="https://img.shields.io/badge/Express-MVC-000000?style=for-the-badge&logo=express&logoColor=white" alt="Express">
+    <img src="https://img.shields.io/badge/DB-SQLite-003B57?style=for-the-badge&logo=sqlite&logoColor=white" alt="SQLite">
   </p>
 </div>
 
