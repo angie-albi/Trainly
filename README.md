@@ -35,25 +35,16 @@ Il core del progetto è basato su **Express.js** e organizzato secondo il patter
 
 ---
 
-## 🚀 Esempio di Utilizzo
+## 🚀 Esempio di Utilizzo (Account Test)
 
-Per utilizzare l'applicazione, una volta avviato il server, puoi accedere con gli account pre-configurati per testare i diversi ruoli.
+Per utilizzare l'applicazione e testare i diversi ruoli, utilizza le seguenti credenziali pre-configurate:
 
-Ecco le credenziali di test pronte all'uso:
+| Ruolo | Email | Password |
+| :--- | :--- | :--- |
+| 👑 **Admin** | `admin@trainly.com` | `Admin123!` |
+| 🧑 **User** | `albitres2004@gmail.com` | `Test123!` |
+| 🧑 **User** | `lucia.bianchi@gmail.com` | `Test123!` |
 
-```text
-// 1. Ruolo Amministratore (Accesso completo a Dashboard e Prodotti)
-Email:    admin@trainly.com
-Password: Admin123!
-
-// 2. Ruolo Utente Standard (Acquisti e Storico Ordini)
-Email:    albitres2004@gmail.com
-Password: Test123!
-
-// 3. Ruolo Utente Secondario
-Email:    lucia.bianchi@gmail.com
-Password: Test123!
-```
 ---
 
 ## 📂 Struttura del Progetto
@@ -89,7 +80,7 @@ trainly/
 ├── 📄 db.js                   # Connessione e inizializzazione SQLite
 ├── 📄 schema.sql              # Schema DDL del database
 └── 📄 package.json            # Dipendenze del progetto
-
+```
 ---
 
 ## 🗄️ Struttura Dati
