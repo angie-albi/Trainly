@@ -1,96 +1,43 @@
-# Trainly 🏋️ - Piattaforma E-commerce per il Fitness
-
 <div align="center">
-
-[](https://nodejs.org/) [](https://expressjs.com/) [](https://sqlite.org/) [](https://ejs.co/)
-
-Un'applicazione web per migliorare il percorso di allenamento attraverso l'acquisto di prodotti e servizi digitali dedicati al fitness
-
+  <h1>🏋️ Trainly</h1>
+  <p>
+    Una piattaforma E-commerce web completa per il fitness, dedicata alla vendita di prodotti e servizi digitali.
+    <br />
+    <br />
+    <img src="https://img.shields.io/badge/Node.js-16+-339933?style=for-the-badge&logo=nodedotjs&logoColor=white" alt="Node Version">
+    <img src="https://img.shields.io/badge/Express-MVC-000000?style=for-the-badge&logo=express&logoColor=white" alt="Express">
+    <img src="https://img.shields.io/badge/DB-SQLite-003B57?style=for-the-badge&logo=sqlite&logoColor=white" alt="SQLite">
+  </p>
 </div>
 
-## Funzionalità Principali
+---
 
-### 👤 Per i Visitatori (Non Registrati):
+## 🧐 Di cosa si tratta?
 
-  - 🛍️ Esplorare il catalogo completo di prodotti e servizi
-  - 🔎 Utilizzare la funzione di ricerca per trovare prodotti specifici
-  - 🛒 Aggiungere e rimuovere prodotti dal carrello
+Questo progetto implementa una **Web App E-commerce** dinamica e responsive. È progettata per gestire l'intero ciclo di vita di un acquisto online, dalla navigazione del catalogo fino alla gestione degli ordini, con aree riservate per utenti e amministratori.
 
-### 🧑 Per gli Utenti Standard (Registrati):
+Le funzionalità principali includono:
+* **Catalogo Dinamico:** Esplorazione e ricerca prodotti gestita tramite template engine EJS.
+* **Gestione Carrello:** Aggiunta e rimozione prodotti con calcolo automatico dei totali.
+* **Area Amministrativa:** Pannello di controllo per gestire prodotti (CRUD completo) e visualizzare gli ordini degli utenti.
 
-  - 🔐 **Autenticazione sicura** con registrazione e login
-  - 💳 **Completare l'acquisto** dei prodotti nel carrello
-  - 📖 **Visualizzare lo storico** dei propri ordini
-  - ✍️ **Gestire il profilo** personale 
+---
 
-### 👑 Per gli Amministratori:
+## 🛠️ Funzionalità del Codice
 
-  - 📊 **Pannello di controllo dedicato** per la gestione del sito
-  - 🛍️ **Gestione completa del catalogo**: aggiunta, modifica ed eliminazione di prodotti
-  - 📦 **Visualizzazione di tutti gli ordini** effettuati dagli utenti sulla piattaforma
+Il core del progetto è basato su **Express.js** e organizzato secondo il pattern MVC. Ecco i moduli principali disponibili:
 
-## Tecnologie Utilizzate
+- `Autenticazione`: Gestione sicura di login e registrazione tramite **Passport.js** e hashing delle password con **Bcrypt**.
+- `Gestione Prodotti`: API per creare, modificare ed eliminare articoli dal database SQLite (`products` table).
+- `Sistema Ordini`: Logica per convertire il contenuto del carrello (`cart_items`) in un ordine confermato (`orders`).
+- `Middleware`: Controllo degli accessi per proteggere le route sensibili (es. solo Admin).
+- `Database`: Utilizzo di **SQLite** per un'archiviazione dati leggera e portabile senza configurazioni complesse.
 
-### Backend
+---
 
-  - **Node.js**: Runtime JavaScript per il server
-  - **Express.js**: Framework web per la gestione delle route e delle richieste API
-  - **EJS**: Template engine per generare HTML dinamico lato server
-  - **Passport.js**: Middleware per la gestione dell'autenticazione
-  - **Bcrypt**: Libreria per l'hashing sicuro delle password
+## 🚀 Esempio di Utilizzo (Account Test)
 
-### Database
-
-  - **SQLite**: Database relazionale leggero per la memorizzazione dei dati
-
-### Frontend
-
-  - **HTML5 / CSS3**: Struttura e stile delle pagine web
-  - **JavaScript (ES6+)**: Interattività e logica lato client
-  - **Bootstrap 5**: Framework CSS per un design responsive e moderno
-
-### Sviluppo
-
-  - **Nodemon**: Riavvio automatico del server durante lo sviluppo
-
-## Installazione e Avvio
-
-Per avviare il progetto in locale, segui questi semplici passaggi
-
-### 📋 Prerequisiti
-
-  - **Node.js** (versione 16 o superiore)
-  - **npm** (incluso in Node.js)
-
-### ⚙️ Istruzioni
-
-1.  **Clona il repository** (o scarica i file in una cartella)
-    ```bash
-    git clone https://github.com/angie-albi/Progetto_Metodologie_Web_Trainly.git    
-    ```
-
-2.  **Spostati nella directory del progetto**
-    ```bash
-    cd Progetto_Metodologie_Web_Trainly    
-    ```
-    
-3.  **Installa le dipendenze** del progetto. Apri un terminale nella cartella principale ed esegui
-
-    ```bash
-    npm install
-    ```
-
-4.  **Avvia l'applicazione**. Il database e i dati iniziali verranno creati automaticamente
-
-    ```bash
-    npm start
-    ```
-
-5.  **Apri il browser** e visita l'indirizzo: http://localhost:3000/
-
-## Account di Test
-
-Per testare le diverse funzionalità, puoi utilizzare i seguenti account preconfigurati:
+Per utilizzare l'applicazione e testare i diversi ruoli, utilizza le seguenti credenziali pre-configurate:
 
 | Ruolo | Email | Password |
 | :--- | :--- | :--- |
@@ -98,15 +45,19 @@ Per testare le diverse funzionalità, puoi utilizzare i seguenti account preconf
 | 🧑 **User** | `albitres2004@gmail.com` | `Test123!` |
 | 🧑 **User** | `lucia.bianchi@gmail.com` | `Test123!` |
 
-## Struttura del Progetto
+---
 
-```
+## 📂 Struttura del Progetto
+
+Ecco come è organizzato il codice sorgente:
+
+```text
 trainly/
 ├── 📁 bin/
-│   └── www                # Script di avvio del server
+│   └── 📄 www                 # Script di avvio del server
 ├── 📁 middleware/
-│   ├── autorizzazioni.js  # Middleware per permessi (utente, admin)
-│   └── passport.js        # Configurazione per l'autenticazione
+│   ├── 📄 autorizzazioni.js   # Gestione permessi (isAuthenticated, isAdmin)
+│   └── 📄 passport.js         # Strategia di autenticazione locale
 ├── 📁 models/
 │   └── 📁 dao/            # Data Access Objects per le operazioni sul DB
 ├── 📁 public/             # File statici (CSS, JS client, immagini)
@@ -131,3 +82,9 @@ Il database `SQLite` è organizzato nelle seguenti tabelle principali:
   - `newsletter`: Lista delle email iscritte alla newsletter
 
 Per una visione completa della struttura, consulta il file schema.sql
+
+## Video Dimostrativo
+
+Guarda il video che mostra le principali funzionalità di **Trainly** in azione\!
+
+**[Guarda il video]** https://youtu.be/ZLD7Dgu3Zag
