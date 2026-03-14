@@ -131,9 +131,3 @@ Il database `SQLite` è organizzato nelle seguenti tabelle principali:
   - `newsletter`: Lista delle email iscritte alla newsletter
 
 Per una visione completa della struttura, consulta il file schema.sql
-
-## Video Dimostrativo
-
-Guarda il video che mostra le principali funzionalità di **Trainly** in azione\!
-
-**[Guarda il video]** https://youtu.be/ZLD7Dgu3Zag
