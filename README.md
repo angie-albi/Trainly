@@ -1,10 +1,9 @@
 <div align="center">
   <h1>🏋️ Trainly</h1>
-  [![Live Demo](https://trainly.onrender.com)]
-  
   <p>
     Una piattaforma E-commerce web completa per il fitness, dedicata alla vendita di prodotti e servizi digitali.
     <br />
+    Visita il sito: https://trainly.onrender.com
     <br />
     <img src="https://img.shields.io/badge/Node.js-16+-339933?style=for-the-badge&logo=nodedotjs&logoColor=white" alt="Node Version">
     <img src="https://img.shields.io/badge/Express-MVC-000000?style=for-the-badge&logo=express&logoColor=white" alt="Express">
