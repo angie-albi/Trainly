@@ -14,13 +14,6 @@
 
 ---
 
-## 📸 Screenshot dell'Applicazione
-
-![alt text](image.png)
-![alt text](image-1.png)
-![alt text](image-2.png)
----
-
 ## 🧐 Di cosa si tratta?
 
 Questo progetto implementa una **Web App E-commerce** dinamica e responsive. È progettata per gestire l'intero ciclo di vita di un acquisto online, dalla navigazione del catalogo fino alla gestione degli ordini, con aree riservate per utenti e amministratori.
@@ -53,6 +46,14 @@ Per utilizzare l'applicazione e testare i diversi ruoli, utilizza le seguenti cr
 | 👑 **Admin** | `admin@trainly.com` | `Admin123!` |
 | 🧑 **User** | `albitres2004@gmail.com` | `Test123!` |
 | 🧑 **User** | `lucia.bianchi@gmail.com` | `Test123!` |
+
+---
+
+## 📸 Screenshot dell'Applicazione
+
+![alt text](image.png)
+![alt text](image-1.png)
+![alt text](image-2.png)
 
 ---
 
