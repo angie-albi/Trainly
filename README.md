@@ -59,32 +59,69 @@ trainly/
 │   ├── 📄 autorizzazioni.js   # Gestione permessi (isAuthenticated, isAdmin)
 │   └── 📄 passport.js         # Strategia di autenticazione locale
 ├── 📁 models/
-│   └── 📁 dao/            # Data Access Objects per le operazioni sul DB
-├── 📁 public/             # File statici (CSS, JS client, immagini)
-├── 📁 routes/             # Gestione delle route per le pagine e le API
-├── 📁 views/              # Viste EJS (template HTML)
-│   └── 📁 partials/       # Componenti riutilizzabili (header footer, ...)
-├── 📄 app.js              # File principale di configurazione Express
-├── 📄 db.js               # Gestione della connessione e inizializzazione del DB
-├── 📄 schema.sql          # Schema del database SQLite
-├── 📄 package.json        # Dipendenze e script del progetto
-└── 📄 .env.example        # Template per le variabili d'ambiente
+│   └── 📁 dao/                # Data Access Objects (Query SQL dirette)
+│       ├── 📄 prodotti-dao.js
+│       ├── 📄 ordini-dao.js
+│       └── ... (altri DAO per carrello, utenti, ecc.)
+├── 📁 public/
+│   ├── 📁 img/                # Immagini prodotti e layout
+│   ├── 📁 js/                 # Script Frontend (Logica carrello, Fetch API)
+│   └── 📁 stylesheets/        # Stili CSS personalizzati
+├── 📁 routes/
+│   ├── 📄 api.js              # Endpoint API (JSON) per il frontend
+│   └── 📄 auth.js             # Route per navigazione pagine e login
+├── 📁 views/                  # Template Engine (EJS)
+│   ├── 📁 partials/           # Componenti riutilizzabili (Navbar, Footer)
+│   ├── 📄 index.ejs           # Homepage
+│   ├── 📄 catalogo.ejs        # Pagina prodotti
+│   └── ... (altre viste)
+├── 📄 .env                    # Variabili d'ambiente (Porta, Secret)
+├── 📄 app.js                  # Configurazione principale Express
+├── 📄 db.js                   # Connessione e inizializzazione SQLite
+├── 📄 schema.sql              # Schema DDL del database
+└── 📄 package.json            # Dipendenze del progetto
 ```
+---
 
-## Schema del Database
+## 🗄️ Struttura Dati
 
-Il database `SQLite` è organizzato nelle seguenti tabelle principali:
+Il progetto include uno schema database relazionale (**SQLite**) già strutturato per garantire l'integrità delle informazioni.
+Il file `schema.sql` definisce le seguenti entità:
 
-  - `users`: Memorizza i dati degli utenti (inclusi gli admin)
-  - `products`: Contiene il catalogo di tutti i prodotti digitali in vendita
-  - `orders` e `order_items`: Gestiscono gli ordini e i prodotti associati
-  - `cart_items`: Salva il contenuto del carrello per gli utenti registrati
-  - `newsletter`: Lista delle email iscritte alla newsletter
+* ✅ **Users**: Memorizzazione sicura degli utenti e dei ruoli (Admin/User).
+* ✅ **Products**: Catalogo articoli con dettagli, prezzi e immagini.
+* ✅ **Orders & Items**: Tracciamento storico degli acquisti effettuati.
+* ✅ **Cart**: Persistenza del carrello utente tra le sessioni.
+* ✅ **Newsletter**: Raccolta contatti per marketing (opzionale).
 
-Per una visione completa della struttura, consulta il file schema.sql
+Il database viene inizializzato automaticamente al primo avvio tramite `db.js`.
 
-## Video Dimostrativo
+---
 
-Guarda il video che mostra le principali funzionalità di **Trainly** in azione\!
+## ⚙️ Installazione e Setup
 
-**[Guarda il video]** https://youtu.be/ZLD7Dgu3Zag
+Poiché il progetto è configurato come applicazione **Node.js** (include `package.json`):
+
+1.  Clona questa repository sul tuo computer:
+    ```bash
+    git clone https://github.com/angie-albi/Trainly.git
+    ```
+2.  Entra nella cartella del progetto:
+    ```bash
+    cd Trainly
+    ```
+3.  Installa le dipendenze necessarie:
+    ```bash
+    npm install
+    ```
+4.  Avvia l'applicazione (il DB verrà creato in automatico):
+    ```bash
+    npm start
+    ```
+5.  Apri il browser all'indirizzo: http://localhost:3000
+
+---
+
+### 👤 Autore
+
+Sviluppato da **Angie Albitres**
