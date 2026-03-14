@@ -1,5 +1,7 @@
 <div align="center">
   <h1>🏋️ Trainly</h1>
+  [![Live Demo](https://trainly.onrender.com)]
+  
   <p>
     Una piattaforma E-commerce web completa per il fitness, dedicata alla vendita di prodotti e servizi digitali.
     <br />
@@ -10,6 +12,13 @@
   </p>
 </div>
 
+---
+
+## 📸 Screenshot dell'Applicazione
+
+![alt text](image.png)
+![alt text](image-1.png)
+![alt text](image-2.png)
 ---
 
 ## 🧐 Di cosa si tratta?
@@ -97,29 +106,32 @@ Il file `schema.sql` definisce le seguenti entità:
 Il database viene inizializzato automaticamente al primo avvio tramite `db.js`.
 
 ---
-
 ## ⚙️ Installazione e Setup
 
-Poiché il progetto è configurato come applicazione **Node.js** (include `package.json`):
+Poiché il progetto è configurato come applicazione **Node.js**, segui questi passaggi per avviarlo correttamente in locale:
 
-1.  Clona questa repository sul tuo computer:
+1.  **Clona la repository:**
     ```bash
-    git clone https://github.com/angie-albi/Trainly.git
+    git clone https://github.com/angie-albi/trainly.git
     ```
-2.  Entra nella cartella del progetto:
+2.  **Entra nella cartella del progetto:**
     ```bash
-    cd Trainly
+    cd trainly
     ```
-3.  Installa le dipendenze necessarie:
+3.  **Installa le dipendenze necessarie:**
     ```bash
     npm install
     ```
-4.  Avvia l'applicazione (il DB verrà creato in automatico):
+4.  **Configura le Variabili d'Ambiente (Importante 🚨):**
+    Per questioni di sicurezza, le credenziali e le chiavi segrete non sono incluse nella repository. 
+    * Troverai un file chiamato `.env.example`.
+    * Creane una copia nella stessa cartella e rinominala in `.env` (su terminale puoi fare: `cp .env.example .env`).
+    * Compila il file `.env` inserendo una stringa a tua scelta per `SESSION_SECRET`.
+5.  **Avvia l'applicazione** (il database SQLite verrà creato e inizializzato in automatico):
     ```bash
     npm start
     ```
-5.  Apri il browser all'indirizzo: http://localhost:3000
-
+6.  **Visita il sito:** Apri il tuo browser all'indirizzo `http://localhost:3000`
 ---
 
 ### 👤 Autore
