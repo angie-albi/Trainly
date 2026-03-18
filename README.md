@@ -51,7 +51,7 @@ Per utilizzare l'applicazione e testare i diversi ruoli, utilizza le seguenti cr
 
 ## 📸 Demo dell'Applicazione
 
-![Demo](public\video\demo-web.gif)
+![Demo](public/video/demo-web.gif)
 
 ---
 
