@@ -49,11 +49,9 @@ Per utilizzare l'applicazione e testare i diversi ruoli, utilizza le seguenti cr
 
 ---
 
-## 📸 Screenshot dell'Applicazione
+## 📸 Demo dell'Applicazione
 
-![alt text](image.png)
-![alt text](image-1.png)
-![alt text](image-2.png)
+![Demo](public\video\demo-web.gif)
 
 ---
 
